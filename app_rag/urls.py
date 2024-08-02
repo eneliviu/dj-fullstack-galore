@@ -1,7 +1,7 @@
-from . import views
+from . import views as app_rag_views
 from django.urls import path
 
 
 urlpatterns = [
-    path('', views.index, name='home'),
+    path('', app_rag_views.index, name='index'),
 ]

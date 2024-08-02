@@ -16,12 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from about import views as about_views
-from app_rag import views as app_ragg_views
+from app_rag import views as app_rag_views
 
+# The project-level urls.py file is the top level of our URLs.
+# Include all app urls.py- files in the project urls.py file:
 urlpatterns = [
-    path('', app_ragg_views.index, name="index"),
-    path('about/', about_views.about, name='about'),
-    path('', include('app_rag.urls'), name="app_rag_urls"),
+    path('about/', include('about.urls'), name='about'),
     path('admin/', admin.site.urls),
+    path('rag/', include('app_rag.urls'), name="app_rag_urls"),
+    path('summernote/', include('django_summernote.urls')),
+    path('', app_rag_views.index, name="index"),
 ]
