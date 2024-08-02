@@ -1,11 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+
+
 # Create your views here.
-
-
 def index(request):
     '''
-      First view
+    View for About page
     '''
     if request.method == "GET":
         return HttpResponse("This was a GET request")

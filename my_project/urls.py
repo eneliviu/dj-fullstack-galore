@@ -16,12 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from app_rag import views as index_views
 from about import views as about_views
+from app_rag import views as app_ragg_views
 
 urlpatterns = [
-    path('', index_views.index, name="index"),
+    path('', app_ragg_views.index, name="index"),
     path('about/', about_views.about, name='about'),
-    path('rag_app/', index_views.index, name="index"),
+    path('', include('app_rag.urls'), name="app_rag_urls"),
     path('admin/', admin.site.urls),
 ]
