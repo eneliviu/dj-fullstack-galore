@@ -1,0 +1,3 @@
+django-admin startproject my_project .
+python manage.py runserver
+python manage.py startapp app_rag
