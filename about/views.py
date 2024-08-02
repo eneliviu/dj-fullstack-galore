@@ -7,7 +7,9 @@ def about(request):
     '''
     View for About page
     '''
-    if request.method == "GET":
-        return HttpResponse("This was a GET request")
-    elif request.method == "POST":
-        return HttpResponse("This was a POST request")
+    # if request.method == "GET":
+    #     return HttpResponse("This was a GET request from the About-page")
+    # elif request.method == "POST":
+    #     return HttpResponse("This was a POST request from the About-page")
+
+    return render(request, "about/about.html")
