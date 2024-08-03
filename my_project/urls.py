@@ -25,5 +25,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('rag/', include('app_rag.urls'), name="app_rag_urls"),
     path('summernote/', include('django_summernote.urls')),
-    path('', app_rag_views.index, name="index"),
+    path('', include('landing.urls'), name="start"),
 ]
