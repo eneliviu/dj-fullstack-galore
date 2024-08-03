@@ -163,7 +163,6 @@ body {
 .social-icons a > i {
     color: #fafafa;
     opacity: 0.7;
-	
     padding: 0 2rem;
 }
 
@@ -171,4 +170,9 @@ body {
     scale: 1.5;
 	opacity: 1;
     display:inline-block;
+}
+
+.dropdown:hover  {
+    color: red;
+    background-color:green;
 }

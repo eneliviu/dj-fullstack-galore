@@ -33,12 +33,12 @@
 
     <!-- Navigation -->
     <header>
-        <nav class="navbar navbar-expand-md navbar-dark bg-black">
+        <nav class="navbar nav-underline navbar-expand-lg navbar-dark bg-black">
             <div class="container-fluid">
-                <a class="navbar-brand text-capitalize" href="#">
+                <a class="navbar-brand text-capitalize" href="/">
                     <i class="bi bi-robot ms-3 me-2"></i>
                     <strong>
-                        ForestryBot Galore
+                        ForestryBot
                     </strong>
                 </a>
 
@@ -51,14 +51,48 @@
                 <!-- Collapsible content -->
                 <div class="collapse navbar-collapse" id="navbar">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Projects
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li>
+                                    <a class="dropdown-item text-capitalize" href="/rag">
+                                        Virtual assistents
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item text-capitalize" href="#">
+                                        Forest Mapping
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item text-capitalize" href="#">
+                                        Value chains
+                                    </a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        On-going work
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+
                         <li class="nav-item mx-3">
-                            <a class="nav-link active" aria-current="home page" href="#">
-                                Home
+                            <a class="nav-link" href="#">
+                                About
                             </a>
                         </li>
                         <li class="nav-item mx-3">
                             <a class="nav-link" href="#">
-                                About
+                                Blog
                             </a>
                         </li>
                         <li class="nav-item mx-3">
@@ -73,7 +107,7 @@
                         </li>
                         <li class="nav-item mx-3">
                             <a class="nav-link" href="#">
-                                Register
+                                Sign Up!
                             </a>
                         </li>
                     </ul>
@@ -94,6 +128,7 @@
     <main class="flex-shrink-0 main-bg">
 
         {% block content %}
+
         <!-- Content Goes here -->
 
         {% endblock content %}
@@ -104,30 +139,30 @@
     <footer class="mt-auto py-2 bg-black fixed-bottom">
         <div class="container">
             <div class=" fs-5 social-icons text-center p-0 m-0">
-            <a href="https://www.facebook.com/" target="_blank" rel="noopener"
-                aria-label="Visit our Facebook page (opens in a new tab)">
-                <i class="fa-brands fa-facebook"></i>
-            </a>
-            <a href="https://www.twitter.com/" target="_blank" rel="noopener"
-                aria-label="Visit our Twitter page (opens in a new tab)">
-                <i class="fa-brands fa-twitter"></i>
-            </a>
-            <a href="https://www.youtube.com/" target="_blank" rel="noopener"
-                aria-label="Visit our Youtube channel (opens in a new tab)">
-                <i class="fa-brands fa-square-youtube "></i>
-            </a>
-        </div>
+                <a href="https://www.facebook.com/" target="_blank" rel="noopener"
+                    aria-label="Visit our Facebook page (opens in a new tab)">
+                    <i class="fa-brands fa-facebook"></i>
+                </a>
+                <a href="https://www.twitter.com/" target="_blank" rel="noopener"
+                    aria-label="Visit our Twitter page (opens in a new tab)">
+                    <i class="fa-brands fa-twitter"></i>
+                </a>
+                <a href="https://www.youtube.com/" target="_blank" rel="noopener"
+                    aria-label="Visit our Youtube channel (opens in a new tab)">
+                    <i class="fa-brands fa-square-youtube "></i>
+                </a>
+            </div>
 
-        <div class="p-0 m-0 text-center text-white">
-            <small>Copyright &copy;
-                <script>
-                    document.write(new Date().getFullYear())
-                </script>
-                <span>
-                    Code|Star: All Rights Reserved
-                </span>
-            </small>
-        </div>
+            <div class="p-0 m-0 text-center text-white">
+                <small>Copyright &copy;
+                    <script>
+                        document.write(new Date().getFullYear())
+                    </script>
+                    <span>
+                        Code|Star: All Rights Reserved
+                    </span>
+                </small>
+            </div>
 
     </footer>
 
