@@ -1,5 +1,11 @@
 body {
-    background-color: #F9FAFC;
+    background-color: #F9FAFC;*/
+    margin: 0;
+    padding: 0;
+}
+
+#hero-section{
+    margin-top: 0;
 }
 
 .brand {
@@ -172,7 +178,7 @@ body {
     display:inline-block;
 }
 
-.dropdown:hover  {
-    color: red;
-    background-color:green;
+.nav-item.dropdown .dropdown-item:hover {
+    background-color: rgb(5, 43, 39) !important;
+    color: white !important;
 }

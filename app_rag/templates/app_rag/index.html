@@ -1,36 +1,61 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 
 <!-- index.html content starts here -->
 
-<div class="container mt-5">
-    <h3>
-        Add input to chat with personal chatbot
-    </h3>
-    <form action="/" method="POST">
-        <div>
-            <textarea class="form-control" placeholder="Add input here" name="user_input" rows="3"></textarea>
-            <button class="btn btn-primary mt-1" type="submit">Send</button>
-        </div>
-    </form>
+<h1 class="visually-hidden">Hero</h1>
 
-    <div>
-        <div class="card text-center mt-3">
-            <div class="card-header">
-                Chat History:
-            </div>
-            <div class="card-body">
-                {% for response in chat_responses %}
-                <div>
-                    - {{response}}
+<div class="b-example-divider"></div>
+
+<section id="hero-section">
+
+    <div class="container">
+        <div class="row row-cols-md-2 g-5 my-5">
+            <div class="col">
+                <div class="card h-100 shadow p-3">
+                    <img src="{% static 'img/ai-generated-8782744_640.jpg' %}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">RAG application for forest ecosystem categorization</h5>
+                        <p class="card-text">
+                            Leverage the power of our Retrieval-Augmented Generation (<strong>RAG</strong>) application to enhance your
+                            analysis and categorization of forest ecosystems.
+                            The <strong>RAG</strong> system pulls information from extensive databases and repositories, including
+                            scientific research papers, GIS databases, and sensor data.
+                            By retrieving specific datasets, the <strong>RAG</strong> application contextualizes this information to generate detailed,
+                            localized descriptions and assessments of particular forest areas.
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-body-secondary">Last updated:</small>
+                    </div>
                 </div>
-                {% endfor %}
             </div>
-        </div>
-    </div>
+            <div class="col">
+                <div class="card h-100 shadow p-3">
+                    <img src="{% static 'img/ai-generated-8782744_640.jpg' %}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title text-capitalize">RAG for Operational Planning</h5>
+                        <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Et optio pariatur
+                            necessitatibus incidunt vitae expedita obcaecati, perspiciatis placeat eveniet rem,
+                            excepturi
+                            nobis consectetur quo quae?</p>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-body-secondary">Last updated:</small>
+                    </div>
+                </div>
+            </div>
 
-</div>
+
+        </div>
+
+
+
+
+</section>
+
 <!-- index.html content ends here -->
 
 {% endblock %}

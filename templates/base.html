@@ -29,12 +29,15 @@
 
 </head>
 
-<body class="d-flex flex-column h-100 main-bg">
+<body class="d-flex h-100 flex-column main-bg">
 
     <!-- Navigation -->
     <header>
-        <nav class="navbar nav-underline navbar-expand-lg navbar-dark bg-black">
+        <nav class="navbar nav-underline navbar-expand-lg navbar-dark bg-black fixed-top">
+
             <div class="container-fluid">
+
+                <!-- LOGO -->
                 <a class="navbar-brand text-capitalize" href="/">
                     <i class="bi bi-robot ms-3 me-2"></i>
                     <strong>
@@ -48,6 +51,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
+
                 <!-- Collapsible content -->
                 <div class="collapse navbar-collapse" id="navbar">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -57,31 +61,35 @@
                                 data-bs-toggle="dropdown" aria-expanded="false">
                                 Projects
                             </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <ul class="dropdown-menu bg-black" aria-labelledby="navbarDropdown">
+
                                 <li>
-                                    <a class="dropdown-item text-capitalize" href="/rag">
+                                    <a class="dropdown-item text-capitalize text-white-50" href="/rag">
                                         Virtual assistents
                                     </a>
                                 </li>
+
                                 <li>
-                                    <a class="dropdown-item text-capitalize" href="#">
+                                    <a class="dropdown-item text-capitalize text-white-50" href="#">
                                         Forest Mapping
                                     </a>
                                 </li>
+
                                 <li>
-                                    <a class="dropdown-item text-capitalize" href="#">
+                                    <a class="dropdown-item text-capitalize text-white-50" href="#">
                                         Value chains
                                     </a>
                                 </li>
                                 <li>
-                                    <hr class="dropdown-divider">
+                                    <hr class="dropdown-divider bg-secondary">
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="#">
+                                    <a class="dropdown-item text-white-50" href="#">
                                         On-going work
                                     </a>
                                 </li>
                             </ul>
+
                         </li>
 
 
@@ -110,13 +118,15 @@
                                 Sign Up!
                             </a>
                         </li>
+
+
                     </ul>
-
-                    <span class="navbar-text text-white-50  mx-3 d-none d-xl-inline">
-                        ...confusion is part of programming
-                    </span>
-
                 </div>
+
+                <span class="navbar-text text-white-50  mx-3 d-none d-xl-inline">
+                    ...confusion is part of programming
+                </span>
+
 
 
 
@@ -125,7 +135,7 @@
     </header>
 
 
-    <main class="flex-shrink-0 main-bg">
+    <main class="flex-shrink-0 main-bg position-relative">
 
         {% block content %}
 
@@ -136,7 +146,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="mt-auto py-2 bg-black fixed-bottom">
+    <footer class="footer mt-auto py-2 bg-black">
         <div class="container">
             <div class=" fs-5 social-icons text-center p-0 m-0">
                 <a href="https://www.facebook.com/" target="_blank" rel="noopener"
