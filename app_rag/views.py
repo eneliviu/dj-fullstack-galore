@@ -13,7 +13,12 @@ def index(request):
     return render(request, "app_rag/index.html")
 
 
-# Create your views here.
+def rag_dashboard(request):
+    '''
+    View for RAG-app page
+    '''
+    return render(request, "app_rag/rag_dashboard.html")
+
 
 def generate_story_from_words(request):
     '''
@@ -31,6 +36,6 @@ def generate_story_from_words(request):
         pass
 
     return render(request,
-                  "app_rag/index.html",
+                  "app_rag/rag_dashboard.html",
                   {'answer': answer}
                   )

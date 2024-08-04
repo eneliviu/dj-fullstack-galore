@@ -1,7 +1,11 @@
+html,body { 
+    height:100%;
+     margin: 0;
+     padding: 0;
+}
 body {
-    background-color: #F9FAFC;*/
-    margin: 0;
-    padding: 0;
+    background-color: #F9FAFC;
+
 }
 
 #hero-section{
@@ -187,5 +191,13 @@ body {
     transition: all 0.3s; 
 }
 .card:hover {
-    scale: 1.05;
+    scale: 1;
+}
+
+.sidebar {
+    top: 0;
+    left: 0;
+}
+.c-footer {
+    bottom: 0;
 }
