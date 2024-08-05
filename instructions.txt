@@ -1,3 +1,19 @@
 django-admin startproject my_project .
 python manage.py runserver
 python manage.py startapp app_rag
+
+
+
+docker pull ankane/pgvector
+or
+docker pull pgvector/pgvector:pg16
+docker images
+
+start a postgres instance:
+docker run --name pgvector-test -e POSTGRES_PASSWORD=admin -p 5432:5432 ankane/pgvector
+or
+docker run --name pgvector-postgres -e POSTGRES_PASSWORD=admin -d postgres -p 5432:5432
+
+
+check pgAdmin
+
