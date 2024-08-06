@@ -12,9 +12,12 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 import dj_database_url
 from pathlib import Path
+from dotenv import load_dotenv,  find_dotenv
 
-if os.path.isfile('env.py'):
-    import env
+load_dotenv('/home/lien/NLP/dj-fullstack-galore/app_rag/.env')
+
+# if os.path.isfile('env.py'):
+#     import env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +29,11 @@ TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = 'django-insecure-)gr8#nstt%y(j&jc9(*q&c(%@b5vqi-obw56qeb@6@%@)x)n=b'
-SECRET_KEY = os.environ.get('SECRET_KEY')
+# SECRET_KEY = os.environ.get('SECRET_KEY')
+
+SECRET_KEY = str(os.getenv('SECRET_KEY'))
+
+OPENAI_API_KEY = str(os.getenv('OPENAI_API_KEY'))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -92,14 +99,15 @@ WSGI_APPLICATION = 'my_project.wsgi.application'
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': BASE_DIR / 'db.sqlite3',
-        "USER": "postgres_user",
-        "PASSWORD": "s3krit",
-    }
-}
-
+     'default': {
+         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+         'NAME': 'vector_db',
+         "USER": "lien",
+         "PASSWORD": "1212",
+         #"HOST": "localhost",
+         #"PORT": 5432
+     }
+ }
 
 
 CSRF_TRUSTED_ORIGINS = [

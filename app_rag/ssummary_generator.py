@@ -1,5 +1,11 @@
 import os
-from openai import OpenAI
+from langchain.document_loaders import TextLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
+from dotenv import load_dotenv,  find_dotenv
+from langchain_postgres import PGVector
+
 
 def generate_story(words):
     '''

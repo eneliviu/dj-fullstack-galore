@@ -95,4 +95,3 @@ for doc in similar:
 db.drop_tables()
 
 # %%
-
