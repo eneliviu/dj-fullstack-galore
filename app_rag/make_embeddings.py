@@ -62,7 +62,7 @@ document_vectors = embeddings.embed_documents([t.page_content for t in chunks[:5
 
 from langchain_postgres import PGVector
 
-CONNECTION_STRING = "postgresql+psycopg:///postgres"
+CONNECTION_STRING = "postgresql+psycopg:///vector_db"
 COLLECTION_NAME = 'state_of_the_union'
 
 db = PGVector.from_documents(embedding=embeddings,
@@ -70,25 +70,27 @@ db = PGVector.from_documents(embedding=embeddings,
                              collection_name=COLLECTION_NAME,
                              connection=CONNECTION_STRING,
                              use_jsonb=True,)
-retriever  = db.as_retriever(
+
+retriever = db.as_retriever(
     search_type="mmr",
     search_kwargs={'k': 4,
                    'lambda_mult': 0.25,
-                   'score_threshold': 0.5}
-)
+                   'score_threshold': 0.5})
+
 # %%
 
-query = 'What did the president say about Russia'
-similar = db.similarity_search_with_score(query)
+some_query = 'What did the president say about Russia'
+similar = db.similarity_search_with_score(some_query)
 
 for doc in similar:
     print(doc)
 
 # %%
-similar = retriever.invoke(query)
+
+similar = retriever.invoke(some_query)
 for doc in similar:
     print(doc)
-    
+
 # %%
 db.drop_tables()
 
