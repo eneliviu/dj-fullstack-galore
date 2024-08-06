@@ -5,10 +5,8 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings import OpenAIEmbeddings
 
 from langchain_openai import OpenAIEmbeddings
-from dotenv import load_dotenv
+from dotenv import load_dotenv,  find_dotenv
 
-if os.path.isfile('env.py'):
-    import env
 
 # %%
 
@@ -49,6 +47,8 @@ embedding_cost(chunks)
 # %%
 
 # Create embeddings from the chunks
+load_dotenv('/home/lien/NLP/dj-fullstack-galore/app_rag/.env')
+
 embeddings = OpenAIEmbeddings()
 vector = embeddings.embed_query('testing the embedding model')
 
@@ -57,30 +57,40 @@ vector = embeddings.embed_query('testing the embedding model')
 document_vectors = embeddings.embed_documents([t.page_content for t in chunks[:5]])
 
 # %%
-COLLECTION_NAME = 'state_of_the_union'
-
-db = PGEmbedding.from_documents(
-    embedding=embeddings,
-    documents=docs,
-    collection_name=COLLECTION_NAME,
-    connection_string=connection_string,
-)
-
-# %%
 
 # PGvector
 
-from langchain_community.vectorstores import PGEmbedding
+from langchain_postgres import PGVector
 
-
-CONNECTION_STRING = "postgresql+psycopg://langchain:langchain@localhost:6024/langchain"
+CONNECTION_STRING = "postgresql+psycopg:///postgres"
 COLLECTION_NAME = 'state_of_the_union'
 
-
-db = PGEmbedding.from_documents(embedding=embeddings,
+db = PGVector.from_documents(embedding=embeddings,
                              documents=chunks,
                              collection_name=COLLECTION_NAME,
-                             connection_string=CONNECTION_STRING,
+                             connection=CONNECTION_STRING,
                              use_jsonb=True,)
+retriever  = db.as_retriever(
+    search_type="mmr",
+    search_kwargs={'k': 4,
+                   'lambda_mult': 0.25,
+                   'score_threshold': 0.5}
+)
+# %%
+
+query = 'What did the president say about Russia'
+similar = db.similarity_search_with_score(query)
+
+for doc in similar:
+    print(doc)
 
 # %%
+similar = retriever.invoke(query)
+for doc in similar:
+    print(doc)
+    
+# %%
+db.drop_tables()
+
+# %%
+

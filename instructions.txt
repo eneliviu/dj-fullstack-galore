@@ -2,7 +2,20 @@ django-admin startproject my_project .
 python manage.py runserver
 python manage.py startapp app_rag
 
+# sudo -u postgres psql
+password: 1212
 
+# create database - CREATE DATABASE chinook;
+
+\l - list all exiting databases
+\c - change current database
+\i - include, install, integrate, initialize
+\q - exit postgresql
+q - exit query and return to the command db prompt (do not confuse it with \q)
+
+sudo -u postgres psql -d chinook - connect directly to Chinook db
+
+\dt - display tables 
 
 docker pull ankane/pgvector
 or

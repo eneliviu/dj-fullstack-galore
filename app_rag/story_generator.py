@@ -1,10 +1,6 @@
 import os
 from openai import OpenAI
 
-
-client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
-
-
 def generate_story(words):
     '''
         Call the OpenAI API to generate the story
