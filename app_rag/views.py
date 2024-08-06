@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404, reverse
 from django.views import generic
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponseRedirect
-from .story_generator import generate_story
+from .summary_generator import generate_story
 from .models import LangchainPgEmbedding
 from .embedding import get_embedding
 from pgvector.django import L2Distance

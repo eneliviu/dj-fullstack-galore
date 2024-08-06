@@ -11,12 +11,12 @@ def generate_story(words):
     '''
         Call the OpenAI API to generate the story
     '''
-    response = get_short_story(words)
+    response = get_short_summary(words)
     # Format and return the response
     return format_response(response)
 
 
-def get_short_story(words):
+def get_short_summary(words):
     '''
         Construct the system prompt
     '''
@@ -47,3 +47,15 @@ def format_response(response):
     story = story.strip()
     # Return the formatted story
     return story
+
+def get_completion_from_messages(messages,
+                                 model="gpt-3.5-turbo-0613",
+                                 temperature=0,
+                                 max_tokens=1000):
+    response = openai.ChatCompletion.create(
+        model=model,
+        messages=messages,
+        temperature=temperature, 
+        max_tokens=max_tokens, 
+    )
+    return response.choices[0].message["content"]
