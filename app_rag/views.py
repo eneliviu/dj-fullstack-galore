@@ -27,15 +27,19 @@ def rag_dashboard(request):
       
         # create mebedding from the text
         embedding = get_embedding(text)
-        obj = LangchainPgEmbedding.objects.all()
-        document = obj.order_by(L2Distance('embedding', embedding)).first()
-        
+        document = LangchainPgEmbedding.objects.all().order_by(L2Distance('embedding',
+                                                                     embedding)).first()
         # OpenAI summarization:
         
         context = {'text': text,
                    'most_similar': document
                    }
-        return render(request, "app_rag/rag_dashboard.html", context)
+        return render(request,
+                      "app_rag/rag_dashboard.html",
+                      context)
+        
+    elif request.method == 'GET':
+        return render(request, "app_rag/rag_dashboard.html")
       
 
 def generate_story_from_words(request):

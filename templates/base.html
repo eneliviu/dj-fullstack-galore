@@ -1,7 +1,9 @@
+<!--
+
 {% load static %}
 
 {% url 'base' as home_url %}
-
+-->
 <!DOCTYPE html>
 <html class="h-100" lang="en">
 
@@ -33,7 +35,7 @@
 
     <!-- Navigation -->
     <header>
-        <nav class="navbar nav-underline navbar-expand-lg navbar-dark bg-black fixed-top">
+        <nav class="navbar navbar__base nav-underline navbar-expand-lg navbar-dark bg-black">
 
             <div class="container-fluid">
 
@@ -135,19 +137,20 @@
     </header>
 
 
-    <main class="flex-shrink-0 main-bg position-relative">
-
+    <main class="d-flex flex-column ">
+<!--
         {% block content %}
 
-        <!-- Content Goes here -->
+         Content Goes here
 
         {% endblock content %}
-
+ -->
     </main>
 
     <!-- Footer -->
-    <footer class="footer mt-auto py-2 bg-black sticky-bottom">
-        <div class="container">
+      <div class="container">
+    <footer class="footer footer__base py-2 bg-black sticky-bottom mt-auto">
+       
             <div class=" fs-5 social-icons text-center p-0 m-0">
                 <a href="https://www.facebook.com/" target="_blank" rel="noopener"
                     aria-label="Visit our Facebook page (opens in a new tab)">
@@ -172,10 +175,10 @@
                         Code|Star: All Rights Reserved
                     </span>
                 </small>
-            </div>
+            
 
     </footer>
-
+</div>
 
     <!-- Footer
     <footer class="sticky-footer bg-white">
