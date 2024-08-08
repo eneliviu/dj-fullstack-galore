@@ -14,7 +14,8 @@ import dj_database_url
 from pathlib import Path
 from dotenv import load_dotenv,  find_dotenv
 
-load_dotenv('/home/lien/NLP/dj-fullstack-galore/app_rag/.env')
+load_dotenv('/home/lien/NLP/dj-fullstack-galore/app_rag/.env', 
+            override=True)
 
 # if os.path.isfile('env.py'):
 #     import env

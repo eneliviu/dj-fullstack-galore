@@ -23,12 +23,12 @@ def rag_dashboard(request):
     View for RAG-app page
     '''
     if request.method == "POST":
-        text = request.POST.get('input_text')
+        text = request.POST.get('user-query-input')
       
         # create mebedding from the text
         embedding = get_embedding(text)
         document = LangchainPgEmbedding.objects.all().order_by(L2Distance('embedding',
-                                                                     embedding)).first()
+                                                                           embedding)).first()
         # OpenAI summarization:
         
         context = {'text': text,

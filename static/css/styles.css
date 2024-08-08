@@ -7,8 +7,9 @@
 
 body {
     background-color: #F9FAFC;
-    min-height: 3000px;
+    height: 100%;
     padding-top: 56px;
+    font: 1rem/1.4 system-ui, sans-serif;
 }
 
 header {
@@ -36,9 +37,67 @@ header {
 }
 
 fieldset {
-  background-color: #eeeeee;
+  background-color: #eeeeee !important;
 }
 
+
+#user-query-input {
+    max-height: 100%;
+    box-sizing: border-box;
+}
+
+
+#user-query-div {
+    bottom: 100px;
+    right: 0;
+    transform: translateX(-38%);
+}
+
+
+#btn-submit-user-query{
+    position: fixed;
+    right:0;
+    transform: translateX(-10px);
+    top: 20px;
+    bottom: 0;
+    border-radius: 15px;
+    height: 30px;
+    aspect-ratio: 1;
+    font-size: small;
+    padding: 0 1.1rem;
+}
+
+#run-span{
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    margin-inline: 0;
+}
+#ctrl-span {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    margin-left: 10px;
+    font-size: smaller;
+    border: 1px solid rgb(180, 175, 175);
+    border-radius: 4px;
+    padding: 0 5px;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+
+.sidebar-div{
+    position: relative;
+    top: 80px;
+    left: 0;
+    width: 100px;
+}
+.sidebar {
+    position: relative;
+    line-height: 2rem;
+
+
+}
 
 .social-icons a > i {
     color: #fafafa;
@@ -59,12 +118,54 @@ fieldset {
     scale: 1;
 }
 
-.sidebar {
-    top: 0;
-    left: 0;
-}
 
 .footer__base{
     max-height: 70px;
     margin: 0;
+}
+
+
+/*----------------------------------------
+Copyright (c) 2020 by Chris Coyier (https://codepen.io/chriscoyier/pen/XWKEVLy)
+*/
+.grow-wrap {
+  /* easy way to plop the elements on top of each other and have them both sized based on the tallest one's height */
+  display: grid;
+}
+
+.grow-wrap::after {
+  /* Note the weird space! Needed to preventy jumpy behavior */
+  content: attr(data-replicated-value) " ";
+  /* This is how textarea text behaves */
+  white-space: pre-wrap;
+  /* Hidden from view, clicks, and screen readers */
+  visibility: hidden;
+}
+
+.grow-wrap>textarea {
+  /* You could leave this, but after a user resizes, then it ruins the auto sizing */
+  resize: none;
+  /* Firefox shows scrollbar on growth, you can hide like this. */
+  overflow: hidden;
+}
+
+.grow-wrap>textarea,
+.grow-wrap::after {
+  /* Identical styling required!! */
+  border: 1px solid black;
+  padding: 0.5rem;
+  font: inherit;
+  /* Place on top of each other */
+  grid-area: 1 / 1 / 2 / 2;
+}
+
+/*
+body {
+  margin: 2rem;
+  font: 1rem/1.4 system-ui, sans-serif;
+}
+*/
+
+#user-query-input-label {
+  display: block;
 }

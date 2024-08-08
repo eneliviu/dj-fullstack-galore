@@ -4,6 +4,7 @@ core.python*
 env.py
 .env
 .venv/
+chat_history.json
 __pycache__/
 *.py[cod]
 node_modules/

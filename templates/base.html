@@ -1,8 +1,4 @@
-
-
-{% load static %}
-
-{% url 'base' as home_url %}
+{% load static %} {% url 'base' as home_url %}
 
 <!DOCTYPE html>
 <html class="h-100" lang="en">
@@ -42,19 +38,19 @@
     />
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}" /> 
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
     <!--<link rel="stylesheet" href="/static/css/styles.css" />-->
 
-    <!--Custom JS-->
-    <link rel="stylesheet" href="{% static 'js/script.js' %}" /> 
+    <!--Custom JS
+    <link rel="stylesheet" href="{% static 'js/script.js' %}" />
+    -->
   </head>
 
   <body class="d-flex flex-column main-bg">
-    
     <!-- Navigation -->
     <header class="container-fluid w-100">
       <nav class="navbar navbar__base nav-underline navbar-expand-lg">
-        <div class="container">    
+        <div class="container">
           <!-- LOGO -->
           <a class="navbar-brand text-capitalize mb-1" href="/">
             <i class="bi bi-robot ms-2 me-3"></i>
@@ -155,14 +151,7 @@
     </header>
 
     <main class="d-flex flex-column">
-      
-            {% block content %}
-
-            Content Goes here
-
-            {% endblock content %}
-
-
+      {% block content %} Content Goes here {% endblock content %}
     </main>
 
     <!-- Footer -->

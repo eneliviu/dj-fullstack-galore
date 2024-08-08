@@ -59,3 +59,5 @@ def get_completion_from_messages(messages,
         max_tokens=max_tokens, 
     )
     return response.choices[0].message["content"]
+
+
