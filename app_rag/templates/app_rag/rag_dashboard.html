@@ -1,82 +1,68 @@
-{% extends 'base.html' %}
-{% load static %}
+{% extends 'base.html' %} {% load static %} {% block content %}
 
-{% block content %}
+<!-- html content starts here -->
 
-<!-- index.html content starts here -->
-
-
-<div class="container-fluid  ">
-
-    <div class="row text-center">
-        <div class="col-sm-2 sidebar">
-            <div class="d-block bg-dark mt-5 p-5">
-                <ul class="align-items-center">
-                    <li>
-                        <a href="#home">PLAYGROUND</a>
-                    </li>
-                    <li>
-                        <a href="#home">PLAYGROUND</a>
-                    </li>
-                    <li>
-                        <a href="#home">PLAYGROUND</a>
-                    </li>
-                    <li>
-                        <a href="#home">PLAYGROUND</a>
-                    </li>
-                    <li>
-                        <a href="#home">PLAYGROUND</a>
-                    </li>
-                </ul>
-
-
-            </div>
-
-        </div>
-
-        <div class="mb-4">
-            <form method="POST">
-                {% csrf_token %}
-            <div class="form-group">
-                <label for="input-text">Enter text</label>
-                <textarea name="input_text" id="input-text" class="form-control mb-2">
-                </textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
-
-        </div>
-
-        <div class="col-sm-10 ">
-            <div class="card fixed-bottom m-5 p-5">
-                <div class="row">
-                    <div class="form-floating col-11 gx-0 mx-0 py-0">    
-                        <!-- Document field of the LangchainPgEmbedding model  -->  
-                        <textarea class="form-control" id="user-input">
-                            {{ most_similar.document }} 
-                        </textarea>
-
-                        <label for="user-input">Enter user message...</label>
-                    </div>
-                    <div class="col-1">
-                        <div class="card-body ">
-                            <button class="btn btn-success" type="submit" id="run-user-input">
-                                Run
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-2 sidebar d-block text-danger mt-5 p-5">
+      <ul class="col-sm-2 sidebar d-block bg-dark text-danger mt-5 p-5">
+        <li>
+          <a href="#home">PLAYGROUND</a>
+        </li>
+        <li>
+          <a href="#home">PLAYGROUND</a>
+        </li>
+        <li>
+          <a href="#home">PLAYGROUND</a>
+        </li>
+        <li>
+          <a href="#home">PLAYGROUND</a>
+        </li>
+        <li>
+          <a href="#home">PLAYGROUND</a>
+        </li>
+      </ul>
     </div>
 
+    <div class="col-sm-10">
+      <div class="mb-4">
+        <fieldset>
+            <legend>User query:</legend>
+          <form method="POST">
+            {% csrf_token %}
+            <div class="form-group form-floating">
+              <textarea name="user-query-input" id="user-query-input"
+                    class="form-control mb-2" autofocus="autofocus">
+             </textarea>
+              <label for="user-query-input">Enter user message...</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </fieldset>
+      </div>
 
+      <div class="card m-5 p-5">
+        <div class="row">
+          <div class="form-floating col-11 gx-0 mx-0 py-0">
+            <!-- Document field of the LangchainPgEmbedding model  -->
+            <textarea class="form-control" id="user-input">
+                {{ most_similar.document }} 
+            </textarea>
+            <label for="user-input">Bot response...</label>
+          </div>
 
-
-
+          <div class="col-1">
+            <div class="card-body">
+              <button class="btn btn-success" type="submit" id="run-user-input">
+                Run
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-
-
 
 <!-- index.html content ends here -->
 

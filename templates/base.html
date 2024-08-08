@@ -1,184 +1,212 @@
-<!--
+
 
 {% load static %}
 
 {% url 'base' as home_url %}
--->
+
 <!DOCTYPE html>
 <html class="h-100" lang="en">
-
-<head>
+  <head>
     <title>ForestryBot</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Google Fonts CSS -->
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@300;700&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- Font Awesome CSS -->
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/fontawesome.min.css"
-        integrity="sha384-BY+fdrpOd3gfeRvTSMT+VUZmA728cfF9Z2G42xpaRkUGu2i3DyzpTURDo5A6CaLK" crossorigin="anonymous">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/fontawesome.min.css"
+      integrity="sha384-BY+fdrpOd3gfeRvTSMT+VUZmA728cfF9Z2G42xpaRkUGu2i3DyzpTURDo5A6CaLK"
+      crossorigin="anonymous"
+    />
 
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" /> 
+    <!--<link rel="stylesheet" href="/static/css/styles.css" />-->
 
-</head>
+    <!--Custom JS-->
+    <link rel="stylesheet" href="{% static 'js/script.js' %}" /> 
+  </head>
 
-<body class="d-flex h-100 flex-column main-bg">
-
+  <body class="d-flex flex-column main-bg">
+    
     <!-- Navigation -->
-    <header>
-        <nav class="navbar navbar__base nav-underline navbar-expand-lg navbar-dark bg-black">
+    <header class="container-fluid w-100">
+      <nav class="navbar navbar__base nav-underline navbar-expand-lg">
+        <div class="container">    
+          <!-- LOGO -->
+          <a class="navbar-brand text-capitalize mb-1" href="/">
+            <i class="bi bi-robot ms-2 me-3"></i>
+            <strong id="logo"> ForestryHub </strong>
+          </a>
 
-            <div class="container-fluid">
+          <!-- Toggler button for small screens -->
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbar"
+            aria-controls="navbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
 
-                <!-- LOGO -->
-                <a class="navbar-brand text-capitalize" href="/">
-                    <i class="bi bi-robot ms-3 me-2"></i>
-                    <strong>
-                        ForestryBot
-                    </strong>
+          <!-- Collapsible content -->
+          <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav me-auto">
+              <li class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle"
+                  href="#"
+                  id="navbarDropdown"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Projects
                 </a>
+                <ul
+                  class="dropdown-menu bg-black"
+                  aria-labelledby="navbarDropdown"
+                >
+                  <li>
+                    <a
+                      class="dropdown-item text-capitalize text-white-50"
+                      href="/rag"
+                    >
+                      Virtual assistents
+                    </a>
+                  </li>
 
-                <!-- Toggler button for small screens -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar"
-                    aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                  <li>
+                    <a
+                      class="dropdown-item text-capitalize text-white-50"
+                      href="#"
+                    >
+                      Forest Mapping
+                    </a>
+                  </li>
 
+                  <li>
+                    <a
+                      class="dropdown-item text-capitalize text-white-50"
+                      href="#"
+                    >
+                      Value chains
+                    </a>
+                  </li>
+                  <li>
+                    <hr class="dropdown-divider bg-secondary" />
+                  </li>
+                  <li>
+                    <a class="dropdown-item text-white-50" href="#">
+                      On-going work
+                    </a>
+                  </li>
+                </ul>
+              </li>
 
-                <!-- Collapsible content -->
-                <div class="collapse navbar-collapse" id="navbar">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item mx-3">
+                <a class="nav-link" href="#"> About </a>
+              </li>
+              <li class="nav-item mx-3">
+                <a class="nav-link" href="#"> Blog </a>
+              </li>
+              <li class="nav-item mx-3">
+                <a class="nav-link" href="#"> Contact Us </a>
+              </li>
+              <li class="nav-item mx-3">
+                <a class="nav-link" href="#"> Login </a>
+              </li>
+              <li class="nav-item mx-3">
+                <a class="nav-link" href="#"> Sign Up! </a>
+              </li>
+            </ul>
+          </div>
 
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                Projects
-                            </a>
-                            <ul class="dropdown-menu bg-black" aria-labelledby="navbarDropdown">
-
-                                <li>
-                                    <a class="dropdown-item text-capitalize text-white-50" href="/rag">
-                                        Virtual assistents
-                                    </a>
-                                </li>
-
-                                <li>
-                                    <a class="dropdown-item text-capitalize text-white-50" href="#">
-                                        Forest Mapping
-                                    </a>
-                                </li>
-
-                                <li>
-                                    <a class="dropdown-item text-capitalize text-white-50" href="#">
-                                        Value chains
-                                    </a>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider bg-secondary">
-                                </li>
-                                <li>
-                                    <a class="dropdown-item text-white-50" href="#">
-                                        On-going work
-                                    </a>
-                                </li>
-                            </ul>
-
-                        </li>
-
-
-                        <li class="nav-item mx-3">
-                            <a class="nav-link" href="#">
-                                About
-                            </a>
-                        </li>
-                        <li class="nav-item mx-3">
-                            <a class="nav-link" href="#">
-                                Blog
-                            </a>
-                        </li>
-                        <li class="nav-item mx-3">
-                            <a class="nav-link" href="#">
-                                Contact Us
-                            </a>
-                        </li>
-                        <li class="nav-item mx-3">
-                            <a class="nav-link" href="#">
-                                Login
-                            </a>
-                        </li>
-                        <li class="nav-item mx-3">
-                            <a class="nav-link" href="#">
-                                Sign Up!
-                            </a>
-                        </li>
-
-
-                    </ul>
-                </div>
-
-                <span class="navbar-text text-white-50  mx-3 d-none d-xl-inline">
-                    ...confusion is part of programming
-                </span>
-
-
-
-
-            </div>
-        </nav>
+          <span class="navbar-text text-dark mx-3 d-none d-xl-inline">
+            ...confusion is part of programming
+          </span>
+        </div>
+      </nav>
     </header>
 
-
-    <main class="d-flex flex-column ">
-    <!--
+    <main class="d-flex flex-column">
+      
             {% block content %}
 
             Content Goes here
 
             {% endblock content %}
-    -->
+
+
     </main>
 
     <!-- Footer -->
+
+    <footer class="footer__base py-2 bg-black mt-auto sticky-bottom">
       <div class="container">
-    <footer class="footer footer__base py-2 bg-black sticky-bottom mt-auto">
-       
-            <div class=" fs-5 social-icons text-center p-0 m-0">
-                <a href="https://www.facebook.com/" target="_blank" rel="noopener"
-                    aria-label="Visit our Facebook page (opens in a new tab)">
-                    <i class="fa-brands fa-facebook"></i>
-                </a>
-                <a href="https://www.twitter.com/" target="_blank" rel="noopener"
-                    aria-label="Visit our Twitter page (opens in a new tab)">
-                    <i class="fa-brands fa-twitter"></i>
-                </a>
-                <a href="https://www.youtube.com/" target="_blank" rel="noopener"
-                    aria-label="Visit our Youtube channel (opens in a new tab)">
-                    <i class="fa-brands fa-square-youtube "></i>
-                </a>
-            </div>
+        <div class="fs-5 social-icons text-center p-0 m-0">
+          <a
+            href="https://www.facebook.com/"
+            target="_blank"
+            rel="noopener"
+            aria-label="Visit our Facebook page (opens in a new tab)"
+          >
+            <i class="fa-brands fa-facebook"></i>
+          </a>
+          <a
+            href="https://www.twitter.com/"
+            target="_blank"
+            rel="noopener"
+            aria-label="Visit our Twitter page (opens in a new tab)"
+          >
+            <i class="fa-brands fa-twitter"></i>
+          </a>
+          <a
+            href="https://www.youtube.com/"
+            target="_blank"
+            rel="noopener"
+            aria-label="Visit our Youtube channel (opens in a new tab)"
+          >
+            <i class="fa-brands fa-square-youtube"></i>
+          </a>
+        </div>
 
-            <div class="p-0 m-0 text-center text-white">
-                <small>Copyright &copy;
-                    <script>
-                        document.write(new Date().getFullYear())
-                    </script>
-                    <span>
-                        Code|Star: All Rights Reserved
-                    </span>
-                </small>
-            
-
+        <div class="p-0 m-0 text-center text-white">
+          <small
+            >Copyright &copy;
+            <script>
+              document.write(new Date().getFullYear());
+            </script>
+            <span> Code|Star: All Rights Reserved </span>
+          </small>
+        </div>
+      </div>
     </footer>
-</div>
 
     <!-- Footer
     <footer class="sticky-footer bg-white">
@@ -190,11 +218,14 @@
     </footer>
     -->
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-    <script src="https://kit.fontawesome.com/498c29f243.js" crossorigin="anonymous"></script>
-
-</body>
-
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://kit.fontawesome.com/498c29f243.js"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>

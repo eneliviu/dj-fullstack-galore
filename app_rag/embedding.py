@@ -14,7 +14,7 @@ def get_embedding(text: str):
     '''
     Make model embeddings from the user text query
     '''
-    
+    print(text)
     text = text.replace("\n", " ")
     input_vector = OpenAIEmbeddings().embed_query(text)
     
