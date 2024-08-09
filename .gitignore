@@ -9,4 +9,5 @@ __pycache__/
 *.py[cod]
 node_modules/
 .github/
+.chroma_db/
 cloudinary_python.txt
