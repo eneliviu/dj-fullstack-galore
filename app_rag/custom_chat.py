@@ -122,7 +122,6 @@ print(len(chunks))
 
 # %%
 
-encoding='utf-8'
 def print_embedding_cost(texts):
     '''
     Calculate the OpenAI embedding costs
@@ -265,7 +264,7 @@ while True:
 # %%
 
 data = load_from_wikipedia('ChatGPT', 'ro')
-chinks = chunk_data(data)
+chunks = chunk_data(data)
 index_name = 'chat_gpt'
 vector_store = insert_or_fetch_embeddings(index_name)
 
@@ -282,8 +281,11 @@ def create_embeddings_chroma(chunks, persist_directory='./chroma_db'):
     '''
     Use chroma db as vector store
     '''
-    from langchain_chroma import Chroma
+    # from langchain_chroma import Chroma
+    from langchain_community.vectorstores import Chroma
+    from langchain_openai import ChatOpenAI
     from langchain_openai import OpenAIEmbeddings
+ 
     
     embedding_function = OpenAIEmbeddings(model='text-embedding-ada-002')
     # chroma vector store object
@@ -329,12 +331,73 @@ answer = ask_and_get_answer(vector_store, q)
 print(answer['answer'])
 # cleanup
 vector_store.delete_collection()
-
+vector_store.reset_collection()
 # %%
 
 # Save chat histry and add memory
+# Create custom prompt
 
 from langchain_openai import ChatOpenAI
-from langchain.chains import ConversationBufferMemory
+from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
+from langchain.prompts import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
+
+
+llm = ChatOpenAI(model_name='gpt-4-turbo-preview',
+                 temperature=0)
+retriever = vector_store.as_retriever(search_type='similarity',
+                                      search_kwargs={'k': 5})
+memory = ConversationBufferMemory(memory_key='chat_history',
+                                  return_messages=True)
+
+
+system_template = r'''
+Use the following pieces of context to answer the user's questions.
+If you don'tfind the answer in the provided content, just respond 'I don't know'
+-----------------------------------
+Context: ```{context}```
+''' 
+
+user_template = r'''
+Questions: ```{question}```
+Chat History: ```{chat_history}```
+'''
+
+messages = [
+    SystemMessagePromptTemplate.from_template(system_template),
+    HumanMessagePromptTemplate.from_template(user_template)
+]
+
+qa_prompt = ChatPromptTemplate.from_messages(messages)
+
+# conversational retriever chain:
+crc = ConversationalRetrievalChain.from_llm(
+    llm=llm,
+    retriever=retriever,
+    memory=memory,
+    chain_type='stuff',
+    combine_docs_chain_kwargs={'prompt': qa_prompt},
+    verbose=True
+)
+
+
+def ask_question(q, chain):
+    '''
+    Takes a question and returns am answer
+    '''
+    results = chain.invoke({'question': q})
+    return results
+
+vector_store = create_embeddings_chroma(chunks)
+    
+results = ask_question('How many authors the document has?',
+                       crc)  
+print(results['answer'])
+
+
+db = load_embeddings_chroma()
+results = ask_question('How many authors the document has?',
+                       crc)  
+print(results['answer'])
+# %%
 
