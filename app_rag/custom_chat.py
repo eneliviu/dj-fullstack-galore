@@ -107,10 +107,10 @@ print(len(data[2].page_content))
 # Make chunks
 
 
-def chunk_data(data, chunk_size=256):
+def chunk_data(data, chunk_size=1000, chunk_overlap=200):
     from langchain.text_splitter import RecursiveCharacterTextSplitter
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size,
-                                                   chunk_overlap=0)
+                                                   chunk_overlap=chunk_overlap)
     chunks = text_splitter.split_documents(data)  # use create_documents when data is not splitted in pages
     
     return chunks
@@ -149,6 +149,7 @@ def insert_or_fetch_embeddings(index_name, chunks):
     embeddings = OpenAIEmbeddings(model='text-embedding-3-small',
                                   dimensions=1536)
     if index_name in pc.list_indexes().names():
+        # Load embeddings if incex alreasy exists
         print(f'Index {index_name} already exists. Loading embeddings...')
         vector_store = Pinecone.from_existing_index(index_name,
                                                     embeddings)
@@ -163,7 +164,7 @@ def insert_or_fetch_embeddings(index_name, chunks):
                 environment='gcp-starter'
                 )
         )
-        
+        # create vector store:
         vector_store = Pinecone.from_documents(chunks,
                                                embeddings, 
                                                index_name=index_name
@@ -197,6 +198,11 @@ def delete_pinecone_index(index_name='all'):
 index_name = 'askadocument'
 vector_store = insert_or_fetch_embeddings(index_name, chunks)
 
+q = 'What is the document about?'
+answer = ask_and_get_answer(vector_store, q)
+print(answer['answer'])
+delete_pinecone_index(index_name)
+
 
 # %%
 
@@ -212,8 +218,8 @@ def ask_and_get_answer(vector_store, q):
     from langchain_openai import ChatOpenAI
     
     retriever = vector_store.as_retriever(search_type='similarity',
-                                          search_kwargs={'k': 3})
-    llm = ChatOpenAI(model_name='gpt-3.5-turbo', temperature=1)
+                                          search_kwargs={'k': 5})
+    chat = ChatOpenAI(model_name='gpt-3.5-turbo', temperature=1)
     
     system_prompt = (
         "Use the given context to answer the question. "
@@ -229,14 +235,7 @@ def ask_and_get_answer(vector_store, q):
         ]
     )
     
-    # chain = RetrievalQA.from_chain_type(
-    #     llm=llm,
-    #     chain_type='stuff',
-    #     retriever=retriever
-    # )
-    # answer = chain.run(q)
-    
-    question_answer_chain = create_stuff_documents_chain(llm,
+    question_answer_chain = create_stuff_documents_chain(chat,
                                                          prompt)
     chain = create_retrieval_chain(retriever,
                                    question_answer_chain)
@@ -263,9 +262,6 @@ while True:
     print(f'\n{"-" * 50} \n')
     
 
-# %%
-
-delete_pinecone_index()
 # %%
 
 data = load_from_wikipedia('ChatGPT', 'ro')
@@ -316,7 +312,7 @@ def load_embeddings_chroma(persist_directory='./chroma_db'):
 # %%
 
 data = load_document('/home/lien/NLP/dj-fullstack-galore/Salas2024_point_patterns_thinnings.pdf')
-chunks = chunk_data(data, chunk_size=256)
+chunks = chunk_data(data, chunk_size=1000, chunk_overlap=200)
 print(len(chunks))
 
 vector_store = create_embeddings_chroma(chunks)
@@ -325,11 +321,20 @@ vector_store = create_embeddings_chroma(chunks)
 
 q = 'What is the document about?'
 answer = ask_and_get_answer(vector_store, q)
-print(answer)
+print(answer['answer'])
 # %%
 
 db = load_embeddings_chroma()
 answer = ask_and_get_answer(vector_store, q)
-
+print(answer['answer'])
+# cleanup
+vector_store.delete_collection()
 
 # %%
+
+# Save chat histry and add memory
+
+from langchain_openai import ChatOpenAI
+from langchain.chains import ConversationBufferMemory
+from langchain.memory import ConversationBufferMemory
+
