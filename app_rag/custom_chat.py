@@ -52,6 +52,7 @@ while True:
     print('-' * 50)
 
 # %%
+
 # Transform loaders to Langchain data model
 
 
@@ -136,6 +137,7 @@ print_embedding_cost(chunks)
 
 # %%
 
+# PINECONE
 # Upload the chunks to database:
 
 def insert_or_fetch_embeddings(index_name, chunks):
@@ -275,7 +277,7 @@ print(answer)
 
 # %% 
 
-# USE ChromaDB
+# CHROMA DB
 
 def create_embeddings_chroma(chunks, persist_directory='./chroma_db'):
     '''
@@ -330,8 +332,9 @@ db = load_embeddings_chroma()
 answer = ask_and_get_answer(vector_store, q)
 print(answer['answer'])
 # cleanup
-vector_store.delete_collection()
 vector_store.reset_collection()
+vector_store.delete_collection()
+
 # %%
 
 # Save chat histry and add memory
@@ -352,8 +355,9 @@ memory = ConversationBufferMemory(memory_key='chat_history',
 
 
 system_template = r'''
-Use the following pieces of context to answer the user's questions.
-If you don'tfind the answer in the provided content, just respond 'I don't know'
+Use only the provided context to answer the user's questions.
+Use four sentence maximum and keep the answer concise.
+If you don't find the answer in the provided content, just respond 'I don't know'.
 -----------------------------------
 Context: ```{context}```
 ''' 
@@ -377,7 +381,7 @@ crc = ConversationalRetrievalChain.from_llm(
     memory=memory,
     chain_type='stuff',
     combine_docs_chain_kwargs={'prompt': qa_prompt},
-    verbose=True
+    verbose=False,
 )
 
 
@@ -396,8 +400,13 @@ print(results['answer'])
 
 
 db = load_embeddings_chroma()
-results = ask_question('How many authors the document has?',
+results = ask_question('What is the article about?',
                        crc)  
 print(results['answer'])
+
+
+memory.clear()
+
+
 # %%
 
