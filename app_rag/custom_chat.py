@@ -52,11 +52,6 @@ while True:
     print('-' * 50)
 
 # %%
-
-# Q&A ChatBot:
-
-# Load docs in Langchain:
-
 # Transform loaders to Langchain data model
 
 
@@ -79,13 +74,11 @@ def load_document(file):
         raise ValueError("Document format is not supported")
         
     data_from_file = loader.load()
+    
     return data_from_file
 
 
-# %%
-
 # Wikipedia loader
-
 
 def load_from_wikipedia(query, lang='sv', load_max_docs=2):
     from langchain.document_loaders import WikipediaLoader
@@ -96,13 +89,13 @@ def load_from_wikipedia(query, lang='sv', load_max_docs=2):
     return data_from_wiki
 
 
-data = load_from_wikipedia('GPT4')
+# data = load_from_wikipedia('GPT4')
 
 
 # %%
 
 data = load_document('/home/lien/NLP/dj-fullstack-galore/Salas2024_point_patterns_thinnings.pdf')
-data = load_document('/home/lien/NLP/dj-fullstack-galore/Arbetsrapport dronare.docx')
+# data = load_document('/home/lien/NLP/dj-fullstack-galore/Arbetsrapport dronare.docx')
 print(data[1].page_content)
 print(data[1].metadata)
 print(len(data))
@@ -140,9 +133,8 @@ def print_embedding_cost(texts):
     print(f'Total Tokens: {total_tokens}')
     print(f'Embedding Cost $: {0.0004 * total_tokens / 1000:.6f}')
     
-# %%
-
 print_embedding_cost(chunks)
+
 # %%
 
 # Upload the chunks to database:
@@ -167,7 +159,9 @@ def insert_or_fetch_embeddings(index_name, chunks):
             name=index_name,
             dimension=1536,
             metric='cosine',
-            spec=PodSpec(environment='gpc-strater')
+            spec=PodSpec(
+                environment='gcp-starter'
+                )
         )
         
         vector_store = Pinecone.from_documents(chunks,
@@ -187,12 +181,155 @@ def delete_pinecone_index(index_name='all'):
     pc = pinecone.Pinecone()
     if index_name == 'all':
         indexes = pc.list_indexes().names()
-        print('deleting all indexes....')
+        print('Deleting all indexes....')
         for index in indexes:
+            print(index)
             pc.describe_index(index)
     else:
         print(f'Deleting index {index_name}', end='')
+        print(pc.list_indexes().names())
         pc.delete_index(index_name)
 
 
-     
+
+# %%
+
+index_name = 'askadocument'
+vector_store = insert_or_fetch_embeddings(index_name, chunks)
+
+
+# %%
+
+# Ask and get questions
+
+def ask_and_get_answer(vector_store, q):
+    '''
+    Asking and getting questions
+    '''
+    from langchain.chains import create_retrieval_chain
+    from langchain.chains.combine_documents import create_stuff_documents_chain
+    # from langchain.chains.retrieval_qa.base import RetrievalQA
+    from langchain_openai import ChatOpenAI
+    
+    retriever = vector_store.as_retriever(search_type='similarity',
+                                          search_kwargs={'k': 3})
+    llm = ChatOpenAI(model_name='gpt-3.5-turbo', temperature=1)
+    
+    system_prompt = (
+        "Use the given context to answer the question. "
+        "If you don't know the answer, say you don't know. "
+        "Use three sentence maximum and keep the answer concise. "
+        "Context: {context}"
+    )
+    
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", system_prompt),
+            ("human", "{input}"),
+        ]
+    )
+    
+    # chain = RetrievalQA.from_chain_type(
+    #     llm=llm,
+    #     chain_type='stuff',
+    #     retriever=retriever
+    # )
+    # answer = chain.run(q)
+    
+    question_answer_chain = create_stuff_documents_chain(llm,
+                                                         prompt)
+    chain = create_retrieval_chain(retriever,
+                                   question_answer_chain)
+    answer = chain.invoke({"input": q})
+    
+    
+    return answer
+
+
+# %%
+
+import time
+i = 1
+print('Write Quite or Exit to quit.')
+while True:
+    q = input(f'Question #{i}: ')
+    i += 1
+    if q.lower() in ['quit', 'exit']:
+        print('QUiting...bye bye!')
+        time.sleep(2)
+        
+    answer = ask_and_get_answer(vector_store, q)
+    print(f'\nAnswer: {answer['answer']}')
+    print(f'\n{"-" * 50} \n')
+    
+
+# %%
+
+delete_pinecone_index()
+# %%
+
+data = load_from_wikipedia('ChatGPT', 'ro')
+chinks = chunk_data(data)
+index_name = 'chat_gpt'
+vector_store = insert_or_fetch_embeddings(index_name)
+
+q = 'Ce este ChatGPT'
+answer = ask_and_get_answer(vector_store, q)
+print(answer)
+
+
+# %% 
+
+# USE ChromaDB
+
+def create_embeddings_chroma(chunks, persist_directory='./chroma_db'):
+    '''
+    Use chroma db as vector store
+    '''
+    from langchain_chroma import Chroma
+    from langchain_openai import OpenAIEmbeddings
+    
+    embedding_function = OpenAIEmbeddings(model='text-embedding-ada-002')
+    # chroma vector store object
+    vector_store = Chroma.from_documents(chunks,
+                                         embedding_function,
+                                         persist_directory=persist_directory)
+    return vector_store
+
+def load_embeddings_chroma(persist_directory='./chroma_db'):
+    '''
+    Load the existing embeddings to a vector store object
+    '''
+    from langchain_chroma import Chroma
+    from langchain_openai import OpenAIEmbeddings
+    
+    embedding_function = OpenAIEmbeddings(model='text-embedding-ada-002',
+                                  dimensions=1536)
+    
+    vector_store = Chroma(persist_directory=persist_directory,
+                          embedding_function=embedding_function)
+    
+    return vector_store
+
+   
+
+# %%
+
+data = load_document('/home/lien/NLP/dj-fullstack-galore/Salas2024_point_patterns_thinnings.pdf')
+chunks = chunk_data(data, chunk_size=256)
+print(len(chunks))
+
+vector_store = create_embeddings_chroma(chunks)
+
+# %%
+
+q = 'What is the document about?'
+answer = ask_and_get_answer(vector_store, q)
+print(answer)
+# %%
+
+db = load_embeddings_chroma()
+answer = ask_and_get_answer(vector_store, q)
+
+
+# %%
