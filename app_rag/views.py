@@ -1,12 +1,10 @@
 
 from django.shortcuts import render, get_object_or_404, reverse
-from django.views import generic
-from django.contrib import messages
-from django.http import JsonResponse, HttpResponseRedirect
+from pgvector.django import L2Distance
+import uuid
 from .summary_generator import generate_story
 from .models import LangchainPgEmbedding
 from .embedding import get_embedding
-from pgvector.django import L2Distance
 
 
 # Create your views here.
@@ -25,15 +23,26 @@ def rag_dashboard(request):
     if request.method == "POST":
         text = request.POST.get('user-query-input')
       
-        # create mebedding from the text
+        # create embedding from the text
         embedding = get_embedding(text)
-        document = LangchainPgEmbedding.objects.all().order_by(L2Distance('embedding',
-                                                                           embedding)).first()
-        # OpenAI summarization:
+        
+        # create new embedding in the table
+        # embedding_model = LangchainPgEmbedding.objects.create(
+        #     uuid=uuid.uuid4(),
+        #     embedding=embedding,
+        #     document=text,
+        # )
+        # print(embedding_model.pk)
+        
+        doc = LangchainPgEmbedding.objects.all().order_by(L2Distance('embedding',
+                                                                      embedding)).first()
+        # TODO: OpenAI summarization:
+        
         
         context = {'text': text,
-                   'most_similar': document
+                   'most_similar': doc
                    }
+        
         return render(request,
                       "app_rag/rag_dashboard.html",
                       context)

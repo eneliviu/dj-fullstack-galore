@@ -18,7 +18,7 @@ class LangchainPgCollection(models.Model):
     uuid = models.UUIDField(primary_key=True)
     name = models.CharField(unique=True)
     cmetadata = models.TextField(blank=True,
-                                 null=True)  # This field type is a guess.
+                                 null=True)
 
     class Meta:
         '''

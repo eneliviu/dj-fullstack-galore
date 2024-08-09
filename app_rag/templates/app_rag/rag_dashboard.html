@@ -19,12 +19,11 @@
     <div class="col-sm-10">
       <div id="user-query-div" class="position-fixed w-50">
         <fieldset>
-          <form method="POST">
+          <form method="POST" id="user-query-form">
             {% csrf_token %}
-
             <div class="form-group form-floating grow-wrap">
               <textarea
-                class="form-control h-100"
+                class="form-control"
                 name="user-query-input"
                 id="user-query-input"
                 autofocus="autofocus"
@@ -35,33 +34,33 @@
               <label id="user-query-input-label" for="user-query-input">
                 User:
               </label>
+
+              <button
+                type="submit"
+                id="btn-submit-user-query"
+                class="btn btn-success"
+              >
+                <span id="run-span">
+                  <strong> Run </strong>
+                  <span id="ctrl-span">
+                    Ctrl
+                    <span class="ms-1"> ↵ </span>
+                  </span>
+                </span>
+              </button>
             </div>
           </form>
-           <button
-              type="submit"
-              id="btn-submit-user-query"
-              class="btn btn-success"
-            >
-              <span id="run-span">
-                <strong>Run</strong>
-                <span id="ctrl-span">
-                  Ctrl
-                  <span class="ms-1"> ↵ </span>
-                </span>
-              </span>
-            </button>
-            
         </fieldset>
       </div>
 
-      <div class="mb-4">
-        <fieldset class="text-bg-dark">
-          <legend>Assistant:</legend>
+      <div class="mb-4 mt-4 align-items-center">
+     
+          <span><strong>Assistant:</strong></span>
           <div class="col-11 gx-0 mx-0 py-0">
             <!-- Document field of the LangchainPgEmbedding model  -->
             <p id="bot-response">{{ most_similar.document }}</p>
           </div>
-        </fieldset>
+    
       </div>
     </div>
   </div>
