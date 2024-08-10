@@ -548,7 +548,7 @@ llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
 
 docs = load_document('/home/lien/NLP/dj-fullstack-galore/Salas2024_point_patterns_thinnings.pdf')
 
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=250)
 splits = text_splitter.split_documents(docs)
 vectorstore = Chroma.from_documents(documents=splits, embedding=OpenAIEmbeddings())
 retriever = vectorstore.as_retriever()
@@ -619,15 +619,15 @@ out.append(conversational_rag_chain.invoke(
     config={
         "configurable": {"session_id": "abc123"}
     },  # constructs a key "abc123" in `store`.
-))["answer"]
+))#["answer"]
 
 
 out.append(conversational_rag_chain.invoke(
     {"input": "How many authors the document has?"},
     config={"configurable": {"session_id": "abc123"}},
-))["answer"]
+))#["answer"]
 
-tmp = out[0]
+hst = out[0]['chat_history']
 
 human_msg = hst[::2]
 ai_msg = hst[1::2]
