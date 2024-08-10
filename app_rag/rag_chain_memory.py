@@ -13,10 +13,10 @@ load_dotenv('/home/lien/NLP/dj-fullstack-galore/app_rag/.env',
 
 # %%
 
-LLM_DEFAULT = 'gpt-4o-2024-08-06' # "gpt-3.5-turbo" #
+LLM_DEFAULT = 'gpt-4o-2024-08-06'  # "gpt-3.5-turbo" #
 EMBEDDING_MODEL_DEFAULT = 'text-embedding-3-large'
 CHUNK_SIZE = 1000
-CHUNK_OVERLAP = 250
+CHUNK_OVERLAP = 500
 
 
 def load_document(file):
@@ -45,6 +45,9 @@ def load_document(file):
 def chunk_data(data,
                chunk_size=CHUNK_SIZE,
                chunk_overlap=CHUNK_OVERLAP):
+    '''
+    Split text in chunks
+    '''
     from langchain.text_splitter import RecursiveCharacterTextSplitter
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size,
                                                    chunk_overlap=chunk_overlap)
@@ -57,11 +60,11 @@ def make_embeddings_chroma(chunks,
                            model_name=EMBEDDING_MODEL_DEFAULT,
                            persist_directory='./chroma_db'):
     '''
-    Use chroma db as vector store
+    Make embeddings and use Chromadb as vector store
     '''
     # from langchain_chroma import Chroma
     from langchain_community.vectorstores import Chroma
-    from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+    from langchain_openai import OpenAIEmbeddings
  
     embedding_function = OpenAIEmbeddings(model=model_name)
     # chroma vector store object
@@ -78,36 +81,37 @@ def load_embeddings_chroma(persist_directory='./chroma_db'):
     from langchain_chroma import Chroma
     from langchain_openai import OpenAIEmbeddings
     
-    embedding_function = OpenAIEmbeddings(model=EMBEDDING_MODEL)
-    
+    embedding_function = OpenAIEmbeddings(model=EMBEDDING_MODEL_DEFAULT)    
     vector_store = Chroma(persist_directory=persist_directory,
                           embedding_function=embedding_function)
-    
     return vector_store
 
 
-def format_human_msg(h_msgs: list[str]) -> list[str]:
+def format_human_msg(msgs: list[str]) -> list[str]:
     '''
     Parse HumanMessage
     '''
-    q = [str(s).replace("'", '').replace('content=', '') for s in h_msgs]
-    return q
+    return [str(s).replace("'", '').replace('content=', '') for s in msgs]
 
 
-def format_ai_answers(ai_msg: list[str]) -> list[str]:
+def format_ai_answers(msg: list[str]) -> list[str]:
     '''
     Parse AIMessage
     '''
-    a = [str(s).replace("'", '').replace('content=', '') for s in ai_msg]
-    return a
+    return [str(s).replace("'", '').replace('content=', '') for s in msg]
 
 
 def get_session_history(session_id: str) -> BaseChatMessageHistory:
+    '''
+    Statefully manage chat history
+    '''
     if session_id not in store:
         store[session_id] = ChatMessageHistory()
     return store[session_id]
 
+
 # %%
+
 
 llm = ChatOpenAI(model=LLM_DEFAULT, temperature=0)
 
@@ -196,18 +200,27 @@ out.append(conversational_rag_chain.invoke(
     config={"configurable": {"session_id": "abc123"}},
 ))
 
-# %% PARSE CHAT HISTORY:
+out.append(conversational_rag_chain.invoke(
+    {"input": "In which year the document was published?"},
+    config={"configurable": {"session_id": "abc123"}},
+))
 
-for elem in out:
-    hst = elem['chat_history']
-    if not hst:
-        human_msg = elem['input']
-        ai_msg = elem['answer']
-    else:
-        human_msg = hst[::2]
-        ai_msg = hst[1::2]
-        print(format_human_msg(human_msg))
-        print(format_ai_answers(ai_msg))
+print(out)
+
+# %% PARSE CHAT HISTORY:
+if len(out) == 0:
+    print('Chat history is empty')
+elif len(out) == 1:
+    human_msg = out[0]['input']
+    ai_msg = out[0]['answer']
+    print(f'Human message: {human_msg}')
+    print(f'Chatbot answer: {ai_msg}')
+else:
+    for elem in out[1:]:
+        human_msg = elem['chat_history'][::2]
+        ai_msg = elem['chat_history'][1::2]
+        print(f'Human message: {format_human_msg(human_msg)[0]}')
+        print(f'Chatbot answer: {format_ai_answers(ai_msg)[0]}')
   
 # %% CLEAN-UP
 
