@@ -502,7 +502,27 @@ chat_history.extend([HumanMessage(content=question), ai_msg_1["answer"]])
 
 second_question = "What are common ways of doing it?"
 ai_msg_2 = rag_chain.invoke({"input": second_question, "chat_history": chat_history})
+chat_history.extend([HumanMessage(content=question), ai_msg_2["answer"]])
 print(ai_msg_2["answer"])
+
+
+third_question = "How many pages the document has?"
+ai_msg_3 = rag_chain.invoke({"input": third_question, "chat_history": chat_history})
+chat_history.extend([HumanMessage(content=question), ai_msg_3["answer"]])
+print(ai_msg_3["answer"])
+
+q = str(HumanMessage(content='How many authors the document has?')).replace("'", '').replace('content=','')
+a = str(ai_msg_3["answer"]).replace("'", '').replace('content=','')
+
+
+
+### Returning sources
+# show users the sources that were used to generate the answer
+
+for document in ai_msg_2["context"]:
+    print(document)
+    print()
+
 
 # %%
 
@@ -534,11 +554,15 @@ vectorstore = Chroma.from_documents(documents=splits, embedding=OpenAIEmbeddings
 retriever = vectorstore.as_retriever()
 
 
-### Contextualize question ###
+### Contextualize question
+# This chain prepends a rephrasing of the input query to our retriever,
+# so that the retrieval incorporates the context of the conversation.
+###
 contextualize_q_system_prompt = """Given a chat history and the latest user question \
 which might reference context in the chat history, formulate a standalone question \
 which can be understood without the chat history. Do NOT answer the question, \
 just reformulate it if needed and otherwise return it as is."""
+
 contextualize_q_prompt = ChatPromptTemplate.from_messages(
     [
         ("system", contextualize_q_system_prompt),
@@ -546,6 +570,7 @@ contextualize_q_prompt = ChatPromptTemplate.from_messages(
         ("human", "{input}"),
     ]
 )
+
 history_aware_retriever = create_history_aware_retriever(
     llm, retriever, contextualize_q_prompt
 )
@@ -587,15 +612,35 @@ conversational_rag_chain = RunnableWithMessageHistory(
     output_messages_key="answer",
 )
 
-conversational_rag_chain.invoke(
+out = []
+
+out.append(conversational_rag_chain.invoke(
     {"input": "What is the document about?"},
     config={
         "configurable": {"session_id": "abc123"}
     },  # constructs a key "abc123" in `store`.
-)["answer"]
+))["answer"]
 
-conversational_rag_chain.invoke(
+
+out.append(conversational_rag_chain.invoke(
     {"input": "How many authors the document has?"},
     config={"configurable": {"session_id": "abc123"}},
-)["answer"]
+))["answer"]
 
+tmp = out[0]
+
+human_msg = hst[::2]
+ai_msg = hst[1::2]
+
+
+def format_human_msg(h_msgs: list[str]) -> list[str]:
+  q = [str(s).replace("'", '').replace('content=','') for s in h_msgs]
+  return q
+
+def format_ai_answers(ai_msg: list[str]) -> list[str]:
+  a = [str(s).replace("'", '').replace('content=','') for s in ai_msg]
+  return a
+
+format_human_msg(human_msg)
+format_ai_answers(ai_msg)
+  
