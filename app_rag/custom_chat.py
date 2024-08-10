@@ -10,9 +10,13 @@ from langchain.memory import ConversationBufferMemory, FileChatMessageHistory
 from dotenv import load_dotenv,  find_dotenv
 load_dotenv('/home/lien/NLP/dj-fullstack-galore/app_rag/.env', 
             override=True)
+
+LLM = 'gpt-4o-2024-08-06'
+EMBEDDING_MODEL = 'text-embedding-3-small'
+
 # %%
 
-llm = ChatOpenAI(model_name='gpt-3.5-turbo', temperature=1)
+llm = ChatOpenAI(model_name=LLM, temperature=1)
 
 history = FileChatMessageHistory('chat_history.json')
 
@@ -108,7 +112,7 @@ print(len(data[2].page_content))
 # Make chunks
 
 
-def chunk_data(data, chunk_size=1000, chunk_overlap=200):
+def chunk_data(data, chunk_size=1000, chunk_overlap=500):
     from langchain.text_splitter import RecursiveCharacterTextSplitter
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size,
                                                    chunk_overlap=chunk_overlap)
@@ -128,16 +132,14 @@ def print_embedding_cost(texts):
     Calculate the OpenAI embedding costs
     '''
     import tiktoken
-    enc = tiktoken.encoding_for_model('text-embedding-ada-002')
+    enc = tiktoken.encoding_for_model(EMBEDDING_MODEL)
     total_tokens = sum([len(enc.encode(page.page_content)) for page in texts])
     print(f'Total Tokens: {total_tokens}')
     print(f'Embedding Cost $: {0.0004 * total_tokens / 1000:.6f}')
     
 print_embedding_cost(chunks)
 
-# %%
-
-# PINECONE
+# %%  PINECONE
 # Upload the chunks to database:
 
 def insert_or_fetch_embeddings(index_name, chunks):
@@ -147,7 +149,7 @@ def insert_or_fetch_embeddings(index_name, chunks):
     from pinecone import PodSpec
     
     pc = pinecone.Pinecone()
-    embeddings = OpenAIEmbeddings(model='text-embedding-3-small',
+    embeddings = OpenAIEmbeddings(model=EMBEDDING_MODEL,
                                   dimensions=1536)
     if index_name in pc.list_indexes().names():
         # Load embeddings if incex alreasy exists
@@ -194,7 +196,7 @@ def delete_pinecone_index(index_name='all'):
 
 
 
-# %%
+# %% PINECONE RUN
 
 index_name = 'askadocument'
 vector_store = insert_or_fetch_embeddings(index_name, chunks)
@@ -220,7 +222,7 @@ def ask_and_get_answer(vector_store, q):
     
     retriever = vector_store.as_retriever(search_type='similarity',
                                           search_kwargs={'k': 5})
-    chat = ChatOpenAI(model_name='gpt-3.5-turbo', temperature=1)
+    chat = ChatOpenAI(model_name=LLM, temperature=0)
     
     system_prompt = (
         "Use the given context to answer the question. "
@@ -289,7 +291,7 @@ def create_embeddings_chroma(chunks, persist_directory='./chroma_db'):
     from langchain_openai import OpenAIEmbeddings
  
     
-    embedding_function = OpenAIEmbeddings(model='text-embedding-ada-002')
+    embedding_function = OpenAIEmbeddings(model=EMBEDDING_MODEL)
     # chroma vector store object
     vector_store = Chroma.from_documents(chunks,
                                          embedding_function,
@@ -303,8 +305,7 @@ def load_embeddings_chroma(persist_directory='./chroma_db'):
     from langchain_chroma import Chroma
     from langchain_openai import OpenAIEmbeddings
     
-    embedding_function = OpenAIEmbeddings(model='text-embedding-ada-002',
-                                  dimensions=1536)
+    embedding_function = OpenAIEmbeddings(model=EMBEDDING_MODEL)
     
     vector_store = Chroma(persist_directory=persist_directory,
                           embedding_function=embedding_function)
@@ -316,7 +317,7 @@ def load_embeddings_chroma(persist_directory='./chroma_db'):
 # %%
 
 data = load_document('/home/lien/NLP/dj-fullstack-galore/Salas2024_point_patterns_thinnings.pdf')
-chunks = chunk_data(data, chunk_size=1000, chunk_overlap=200)
+chunks = chunk_data(data, chunk_size=500, chunk_overlap=0)
 print(len(chunks))
 
 vector_store = create_embeddings_chroma(chunks)
@@ -326,14 +327,20 @@ vector_store = create_embeddings_chroma(chunks)
 q = 'What is the document about?'
 answer = ask_and_get_answer(vector_store, q)
 print(answer['answer'])
+
+q = 'How many authors the document has?'
+answer = ask_and_get_answer(vector_store, q)
+print(answer['answer'])
+
+
 # %%
 
 db = load_embeddings_chroma()
 answer = ask_and_get_answer(vector_store, q)
 print(answer['answer'])
 # cleanup
-vector_store.reset_collection()
-vector_store.delete_collection()
+db.reset_collection()
+db.delete_collection()
 
 # %%
 
@@ -346,26 +353,50 @@ from langchain.memory import ConversationBufferMemory
 from langchain.prompts import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
 
 
-llm = ChatOpenAI(model_name='gpt-4-turbo-preview',
+# Structured Output: Pydantic clas
+from langchain_core.pydantic_v1 import BaseModel, Field
+from typing import Optional
+class Example(BaseModel):
+    class Step(BaseModel):    
+        question: Optional[str] = Field(default='What is the document about?',
+                                        description="User question")
+        answer: Optional[str] = Field(description="System answer")
+
+    steps: list[Step]
+    final_resolution: str = Field(
+        description='The last chat answer'
+    ) 
+
+# Structured Output: TypedDict 
+from typing_extensions import Annotated, TypedDict
+class Example(TypedDict):
+    """QA with memory."""
+    question: Annotated[list[str], ..., "The user question"]
+    answer: Annotated[list[str], ..., "The assistant answer"]
+
+# 'gpt-4-turbo-preview'
+llm = ChatOpenAI(model=LLM,
                  temperature=0)
+structured_llm = llm#.with_structured_output(Example)
+
+# vector_store = create_embeddings_chroma(chunks)
 retriever = vector_store.as_retriever(search_type='similarity',
                                       search_kwargs={'k': 5})
 memory = ConversationBufferMemory(memory_key='chat_history',
                                   return_messages=True)
 
-
 system_template = r'''
-Use only the provided context to answer the user's questions.
-Use four sentence maximum and keep the answer concise.
-If you don't find the answer in the provided content, just respond 'I don't know'.
------------------------------------
-Context: ```{context}```
-''' 
+                        Use the given context to answer the question. 
+                        If you don't know the answer, say you don't know. 
+                        Use three sentence maximum and keep the answer concise.
+                        -----------------------------------
+                        Context: ```{context}```
+                   ''' 
 
 user_template = r'''
-Questions: ```{question}```
-Chat History: ```{chat_history}```
-'''
+                    Questions: ```{question}```
+                    Chat History: ```{chat_history}```
+                '''
 
 messages = [
     SystemMessagePromptTemplate.from_template(system_template),
@@ -376,12 +407,12 @@ qa_prompt = ChatPromptTemplate.from_messages(messages)
 
 # conversational retriever chain:
 crc = ConversationalRetrievalChain.from_llm(
-    llm=llm,
+    llm=structured_llm,
     retriever=retriever,
     memory=memory,
     chain_type='stuff',
     combine_docs_chain_kwargs={'prompt': qa_prompt},
-    verbose=False,
+    verbose=True,
 )
 
 
@@ -390,12 +421,11 @@ def ask_question(q, chain):
     Takes a question and returns am answer
     '''
     results = chain.invoke({'question': q})
+    #results = chain.invoke(q)
     return results
 
-vector_store = create_embeddings_chroma(chunks)
-    
-results = ask_question('How many authors the document has?',
-                       crc)  
+q = 'How many authors the document has?'
+results = ask_question(q, crc)  
 print(results['answer'])
 
 
@@ -406,7 +436,166 @@ print(results['answer'])
 
 
 memory.clear()
+vector_store.delete_collection()
+
+db = load_embeddings_chroma()
+db.reset_collection()
+db.delete_collection()
 
 
 # %%
+
+
+
+# %%
+
+# Contextualizing the question
+from langchain.chains import create_history_aware_retriever
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+
+contextualize_q_system_prompt = """Given a chat history and the latest user question \
+which might reference context in the chat history, formulate a standalone question \
+which can be understood without the chat history. Do NOT answer the question, \
+just reformulate it if needed and otherwise return it as is."""
+contextualize_q_prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", contextualize_q_system_prompt),
+        MessagesPlaceholder("chat_history"),
+        ("human", "{input}"),
+    ]
+)
+history_aware_retriever = create_history_aware_retriever(
+    llm, retriever, contextualize_q_prompt
+)
+
+# Chain with chat history
+from langchain.chains import create_retrieval_chain
+from langchain.chains.combine_documents import create_stuff_documents_chain
+
+qa_system_prompt = """You are an assistant for question-answering tasks. \
+Use the following pieces of retrieved context to answer the question. \
+If you don't know the answer, just say that you don't know. \
+Use three sentences maximum and keep the answer concise.\
+
+{context}"""
+qa_prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", qa_system_prompt),
+        MessagesPlaceholder("chat_history"),
+        ("human", "{input}"),
+    ]
+)
+
+
+question_answer_chain = create_stuff_documents_chain(llm, qa_prompt)
+
+rag_chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)
+# %%
+
+from langchain_core.messages import HumanMessage
+
+chat_history = []
+
+question = "How many authors the document has?"
+ai_msg_1 = rag_chain.invoke({"input": question, "chat_history": chat_history})
+chat_history.extend([HumanMessage(content=question), ai_msg_1["answer"]])
+
+second_question = "What are common ways of doing it?"
+ai_msg_2 = rag_chain.invoke({"input": second_question, "chat_history": chat_history})
+print(ai_msg_2["answer"])
+
+# %%
+
+from langchain.chains import create_history_aware_retriever, create_retrieval_chain
+from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain_chroma import Chroma
+from langchain_community.chat_message_histories import ChatMessageHistory
+from langchain_community.document_loaders import WebBaseLoader
+from langchain_core.chat_history import BaseChatMessageHistory
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.runnables.history import RunnableWithMessageHistory
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+from dotenv import load_dotenv,  find_dotenv
+load_dotenv('/home/lien/NLP/dj-fullstack-galore/app_rag/.env', 
+            override=True)
+
+llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
+
+
+### Construct retriever ###
+
+docs = load_document('/home/lien/NLP/dj-fullstack-galore/Salas2024_point_patterns_thinnings.pdf')
+
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+splits = text_splitter.split_documents(docs)
+vectorstore = Chroma.from_documents(documents=splits, embedding=OpenAIEmbeddings())
+retriever = vectorstore.as_retriever()
+
+
+### Contextualize question ###
+contextualize_q_system_prompt = """Given a chat history and the latest user question \
+which might reference context in the chat history, formulate a standalone question \
+which can be understood without the chat history. Do NOT answer the question, \
+just reformulate it if needed and otherwise return it as is."""
+contextualize_q_prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", contextualize_q_system_prompt),
+        MessagesPlaceholder("chat_history"),
+        ("human", "{input}"),
+    ]
+)
+history_aware_retriever = create_history_aware_retriever(
+    llm, retriever, contextualize_q_prompt
+)
+
+
+### Answer question ###
+qa_system_prompt = """You are an assistant for question-answering tasks. \
+Use the following pieces of retrieved context to answer the question. \
+If you don't know the answer, just say that you don't know. \
+Use three sentences maximum and keep the answer concise.\
+
+{context}"""
+qa_prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", qa_system_prompt),
+        MessagesPlaceholder("chat_history"),
+        ("human", "{input}"),
+    ]
+)
+question_answer_chain = create_stuff_documents_chain(llm, qa_prompt)
+
+rag_chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)
+
+
+### Statefully manage chat history ###
+store = {}
+
+def get_session_history(session_id: str) -> BaseChatMessageHistory:
+    if session_id not in store:
+        store[session_id] = ChatMessageHistory()
+    return store[session_id]
+
+
+conversational_rag_chain = RunnableWithMessageHistory(
+    rag_chain,
+    get_session_history,
+    input_messages_key="input",
+    history_messages_key="chat_history",
+    output_messages_key="answer",
+)
+
+conversational_rag_chain.invoke(
+    {"input": "What is the document about?"},
+    config={
+        "configurable": {"session_id": "abc123"}
+    },  # constructs a key "abc123" in `store`.
+)["answer"]
+
+conversational_rag_chain.invoke(
+    {"input": "How many authors the document has?"},
+    config={"configurable": {"session_id": "abc123"}},
+)["answer"]
 
