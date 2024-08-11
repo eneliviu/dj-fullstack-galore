@@ -27,6 +27,10 @@ urlpatterns = [
          name='about'),
     path('admin/',
          admin.site.urls),
+    path('delete/<int:pk>/',
+         include('app_rag.urls'),
+         name='delete-image'
+         ),
     path('model_form_upload/',
          include('app_rag.urls'),
          name="model_form_upload"),
@@ -49,6 +53,8 @@ urlpatterns = [
          name="start"),
 ]
 
-if settings.DEBUG:
+if settings.DEBUG:  # to serve media files during development
     urlpatterns += static(settings.MEDIA_URL,
                           document_root=settings.MEDIA_ROOT)
+
+

@@ -1,12 +1,12 @@
 
-from django.shortcuts import render, get_object_or_404, reverse
+from django.shortcuts import render, get_object_or_404, redirect
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponseRedirect
 from pgvector.django import L2Distance
 import uuid
 from .summary_generator import generate_story
-from .models import LangchainPgEmbedding
+from .models import LangchainPgEmbedding, LoadImage
 from .embedding import get_embedding
 from .forms import DocumentForm
 
@@ -139,3 +139,10 @@ def model_form_upload_images(request):
                   context)
     
 
+def delete_image(request, pk):
+    '''
+    Delete image
+    '''
+    img = get_object_or_404(LoadImage, pk=pk)
+    img.delete()
+    return redirect('app_rag/model_form_upload/')

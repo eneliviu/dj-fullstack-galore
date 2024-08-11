@@ -1,6 +1,5 @@
+from django.urls import path
 from . import views as app_rag_views
-from django.urls import path, include
-
 
 urlpatterns = [
     path('',
@@ -18,5 +17,9 @@ urlpatterns = [
     path('model_form_upload_images/',
          app_rag_views.model_form_upload_images,
          name='model_form_upload_images'),
+    path('delete/<int:pk>/',
+         app_rag_views.delete_image,
+         name='delete-image'
+         ),
 ]
 

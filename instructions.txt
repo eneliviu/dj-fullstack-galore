@@ -29,4 +29,4 @@ docker run --name pgvector-postgres -e POSTGRES_PASSWORD=admin -d postgres -p 54
 
 
 check pgAdmin
-
+python manage.py dbshell

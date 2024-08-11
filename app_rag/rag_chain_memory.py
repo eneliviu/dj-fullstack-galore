@@ -17,7 +17,7 @@ LLM_DEFAULT = 'gpt-4o-2024-08-06'  # "gpt-3.5-turbo" #
 EMBEDDING_MODEL_DEFAULT = 'text-embedding-3-large'
 CHUNK_SIZE = 1000
 CHUNK_OVERLAP = 500
-
+CHROMA_PATH = './chroma_db'
 
 def load_document(file):
     '''
@@ -58,19 +58,32 @@ def chunk_data(data,
 
 def make_embeddings_chroma(chunks,
                            model_name=EMBEDDING_MODEL_DEFAULT,
-                           persist_directory='./chroma_db'):
+                           persist_directory=CHROMA_PATH):
     '''
     Make embeddings and use Chromadb as vector store
     '''
     # from langchain_chroma import Chroma
+    import os
     from langchain_community.vectorstores import Chroma
     from langchain_openai import OpenAIEmbeddings
+    from chromadb.config import Settings
+    from chromadb import Client
  
     embedding_function = OpenAIEmbeddings(model=model_name)
     # chroma vector store object
+    client = Client(Settings(allow_reset=True,
+                             persist_directory=CHROMA_PATH
+                             ))
+    collection = client.get_or_create_collection(name="vectors")
+    if client.get_or_create_collection(name="vectors"):
+        print('Check if ChromaDB exists')
+        client.delete_collection(name="chroma_info")
+        print('Existing ChromaDB deleted')
+    
     vector_store = Chroma.from_documents(chunks,
                                          embedding_function,
-                                         persist_directory=persist_directory)
+                                         collection_name="vectors",
+                                         persist_directory=CHROMA_PATH)
     return vector_store
 
 
@@ -82,7 +95,7 @@ def load_embeddings_chroma(persist_directory='./chroma_db'):
     from langchain_openai import OpenAIEmbeddings
     
     embedding_function = OpenAIEmbeddings(model=EMBEDDING_MODEL_DEFAULT)    
-    vector_store = Chroma(persist_directory=persist_directory,
+    vector_store = Chroma(persist_directory=CHROMA_PATH,
                           embedding_function=embedding_function)
     return vector_store
 
@@ -112,7 +125,6 @@ def get_session_history(session_id: str) -> BaseChatMessageHistory:
 
 # %%
 
-
 llm = ChatOpenAI(model=LLM_DEFAULT, temperature=0)
 
 # Transform loaders to Langchain data model
@@ -125,9 +137,13 @@ splits = chunk_data(docs,
 
 vectorstore = make_embeddings_chroma(splits,
                                      model_name=EMBEDDING_MODEL_DEFAULT,
-                                     persist_directory='./chroma_db')
+                                     persist_directory=CHROMA_PATH)
 retriever = vectorstore.as_retriever()
 
+#%%
+
+import chromadb
+client = chromadb.PersistentClient(path="CHROMA_PATH")
 # %%
 
 # CREATE RAG-CHAIN
