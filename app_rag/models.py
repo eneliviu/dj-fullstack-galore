@@ -8,6 +8,7 @@
 #       modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values
 # or field names.
+
 from django.db import models
 from pgvector.django import VectorField
 
@@ -23,7 +24,7 @@ class LangchainPgCollection(models.Model):
     class Meta:
         '''
         '''
-        managed = False  # not added to database
+        managed = False  # False: not added to database
         db_table = 'langchain_pg_collection'
 
 
@@ -32,7 +33,7 @@ class LangchainPgEmbedding(models.Model):
     '''
     id = models.CharField(primary_key=True)
     collection = models.ForeignKey(LangchainPgCollection,
-                                   models.DO_NOTHING, 
+                                   models.DO_NOTHING,
                                    blank=True,
                                    null=True)
     embedding = VectorField(dimensions=1536)
@@ -44,14 +45,28 @@ class LangchainPgEmbedding(models.Model):
     class Meta:
         '''
         '''
-        managed = False  # not added to database
+        managed = False  # False: not added to database
         db_table = 'langchain_pg_embedding'
 
 
-class Document(models.Model):
+# class Document(models.Model):
+#     '''
+#     Model for uploaded documents
+#     '''
+#     description = models.CharField(max_length=200, blank=True)
+#     document = models.FileField(upload_to='documents/')
+#     uploaded_at = models.DateTimeField(auto_now_add=True)
+
+class LoadImage(models.Model):
     '''
-    Model for uploaded documents
+    Model for uploading files
     '''
-    description = models.CharField(max_length=200, blank=True)
-    document = models.FileField(upload_to='documents/')
-    uploaded_at = models.DateTimeField(auto_now_add=True)
+    name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='images/')
+    
+    class Meta:
+        '''
+        '''
+        managed = True  # False: not added to database
+        db_table = 'Images'
+    

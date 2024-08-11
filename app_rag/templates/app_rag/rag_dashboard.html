@@ -1,72 +1,119 @@
-{% extends 'base.html' %}
-{% load static %}
+{% extends 'base.html' %} {% load static %}
 
 <!-- html content starts here -->
 {% block content %}
 
-<div class="container justify-content-center">
+<div class="container-fluid">
   <div class="row">
     <div class="col-sm-2">
-      <ul class="d-flex position-fixed flex-column mt-2 p-2">
-        <a href="#">Settings</a>
-        <a href="#">Select model</a>
-        <a href="#">Temperature</a>
-        <a href="#">Maximum Tokens</a>
-        <a href="#">Add function</a>
-        <hr />
-        <a href="#">Upload files</a>
-      </ul>
-    </div>
+      <!--Offcanvas-->
+      
+       
+          <button
+            class="btn btn-primary d-lg-none"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasResponsive"
+            aria-controls="offcanvasResponsive"
+          >
+            <i class="bi bi-gear"></i>
+          </button>
+ 
 
-    <div class="col-sm-10">
-      <div id="user-query-div" class="position-fixed w-50">
-        <fieldset>
-          <form method="POST" id="user-query-form">
-            {% csrf_token %}
-            <div class="form-group form-floating grow-wrap">
-              <textarea
-                class="form-control"
-                name="user-query-input"
-                id="user-query-input"
-                autofocus="autofocus"
-                rows="1"
-                onInput="this.parentNode.dataset.replicatedValue = this.value"
-              >
-              </textarea>
-              <label id="user-query-input-label" for="user-query-input">
-                User:
-              </label>
+        <div class="d-none d-lg-block">
+          <button
+            class="btn btn-primary d-lg-none"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasResponsive"
+            aria-controls="offcanvasResponsive"
+          >
+            <i class="bi bi-gear"></i>
+          </button>
+        </div>
 
-              <button
-                type="submit"
-                id="btn-submit-user-query"
-                class="btn btn-success"
-              >
-                <span id="run-span">
-                  <strong> Run </strong>
-                  <span id="ctrl-span">
-                    Ctrl
-                    <span class="ms-1"> ↵ </span>
-                  </span>
-                </span>
-              </button>
+        <div
+          class="offcanvas-lg offcanvas-start"
+          tabindex="-1"
+          id="offcanvasResponsive"
+          aria-labelledby="offcanvasResponsiveLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasResponsiveLabel">
+              Settings
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="offcanvas"
+              data-bs-target="#offcanvasResponsive"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="offcanvas-body">
+            <div class="d-flex position-fixed flex-column mt-2 p-2">
+              <hr />
+              <a href="#">Select model</a>
+              <a href="#">Temperature</a>
+              <a href="#">Maximum Tokens</a>
+              <a href="#">Add function</a>
+              <hr />
+              <a href="#">Upload files</a>
+              <hr />
             </div>
-          </form>
-        </fieldset>
-      </div>
+          </div>
+        </div>
+    
+      <!--End Offcanvas-->
+    </div>
+      
+    <div class="col-sm-10">
+        <div id="user-query-div" class="position-fixed w-50">
+          <fieldset>
+            <form method="POST" id="user-query-form">
+              {% csrf_token %}
+              <div class="form-group form-floating grow-wrap">
+                <textarea
+                  class="form-control"
+                  name="user-query-input"
+                  id="user-query-input"
+                  autofocus="autofocus"
+                  rows="1"
+                  onInput="this.parentNode.dataset.replicatedValue = this.value"
+                >
+                </textarea>
+                <label id="user-query-input-label" for="user-query-input">
+                  User:
+                </label>
 
-      <div class="mb-4 mt-4 align-items-center">
-     
+                <button
+                  type="submit"
+                  id="btn-submit-user-query"
+                  class="btn btn-success"
+                >
+                  <span id="run-span">
+                    <strong> Run </strong>
+                    <span id="ctrl-span">
+                      Ctrl
+                      <span class="ms-1"> ↵ </span>
+                    </span>
+                  </span>
+                </button>
+              </div>
+            </form>
+          </fieldset>
+        </div>
+
+        <div class="mb-4 mt-4 align-items-center">
           <span><strong>Assistant:</strong></span>
           <div class="col-11 gx-0 mx-0 py-0">
             <!-- Document field of the LangchainPgEmbedding model  -->
             <p id="bot-response">{{ most_similar.document }}</p>
           </div>
-    
+        </div>
       </div>
-    </div>
+    
   </div>
-</div>
 
-<!-- index.html content ends here -->
-{% endblock %}
+  <!-- index.html content ends here -->
+  {% endblock %}
+</div>

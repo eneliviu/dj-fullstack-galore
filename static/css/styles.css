@@ -6,10 +6,14 @@
 }
 
 body {
+    position: relative;
     background-color: #F9FAFC;
     height: 100%;
     padding-top: 56px;
     font: 1rem/1.4 system-ui, sans-serif;
+    width: 100%;
+    min-width: 344px;
+    
 }
 
 header {
@@ -31,6 +35,11 @@ header {
     color: white !important;
 }
 
+
+.offcanvas-body{
+
+    opacity: 1;
+}
 
 #hero-section{
     margin-top: 0;

@@ -2,6 +2,7 @@
 from django.shortcuts import render, get_object_or_404, reverse
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from django.http import HttpResponseRedirect
 from pgvector.django import L2Distance
 import uuid
 from .summary_generator import generate_story
@@ -93,11 +94,12 @@ def simple_upload(request):
                   'app_rag/simple_upload.html')
     
     
+# ----------- Form upload -------------------------------#
 def model_form_upload(request):
     '''
     Upload files using Django Forms
     '''
-    from django.http import HttpResponseRedirect
+  
     if request.method == "POST":
         form = DocumentForm(request.POST,
                             request.FILES)
@@ -111,3 +113,29 @@ def model_form_upload(request):
                   {"form": form}
                   )
     
+    
+# Handling uploaded images with a model
+def model_form_upload_images(request):
+    '''
+    View for uploading images
+    '''
+    from .forms import ImageLoadForm
+    
+    if request.method == 'POST':
+        form = ImageLoadForm(request.POST,
+                             request.FILES)
+        if form.is_valid():
+            form.save()
+        else:
+            context = {'form': form}
+            return render(request,
+                          'app_rag/model_form_upload.html',
+                          context)
+    
+    context = {'form': ImageLoadForm()}
+    
+    return render(request,
+                  'app_rag/model_form_upload.html',
+                  context)
+    
+

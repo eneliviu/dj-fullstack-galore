@@ -54,8 +54,10 @@ INSTALLED_APPS = [
     'django_summernote',
     'about',
     'app_rag',
+    'crispy_forms',
     'import_export',
     'landing',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -102,14 +104,21 @@ WSGI_APPLICATION = 'my_project.wsgi.application'
 
 
 DATABASES = {
-     'default': {
+
+    
+    'default': {
          'ENGINE': 'django.db.backends.postgresql_psycopg2',
          'NAME': 'vector_db',
          "USER": "lien",
          "PASSWORD": "1212",
          #"HOST": "localhost",
-         #"PORT": 5432
-     }
+         #"PORT": 5432,
+     },
+    
+    'files': {
+         'ENGINE': 'django.db.backends.sqlite3',
+         'NAME': BASE_DIR / 'db.sqlite3',
+     },
  }
 
 

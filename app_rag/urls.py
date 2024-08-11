@@ -15,5 +15,8 @@ urlpatterns = [
     path('model_form_upload/',
          app_rag_views.model_form_upload,
          name='model_form_upload'),
+    path('model_form_upload_images/',
+         app_rag_views.model_form_upload_images,
+         name='model_form_upload_images'),
 ]
 
