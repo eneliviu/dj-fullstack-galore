@@ -1,0 +1,10 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+<div class="container justify-content-center">
+  <div class="row">
+    <form method="post" enctype="multipart/form-data" class="mt-5 py-5 text-bg-primary">
+      {% csrf_token %} {{ form.as_p }}
+      <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

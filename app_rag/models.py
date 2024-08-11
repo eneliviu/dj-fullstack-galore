@@ -46,3 +46,12 @@ class LangchainPgEmbedding(models.Model):
         '''
         managed = False  # not added to database
         db_table = 'langchain_pg_embedding'
+
+
+class Document(models.Model):
+    '''
+    Model for uploaded documents
+    '''
+    description = models.CharField(max_length=200, blank=True)
+    document = models.FileField(upload_to='documents/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)

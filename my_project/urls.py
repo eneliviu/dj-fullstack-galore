@@ -16,15 +16,36 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 # The project-level urls.py file is the top level of our URLs.
 # Include all app urls.py- files in the project urls.py file:
 urlpatterns = [
-    path('about/', include('about.urls'), name='about'),
-    path('admin/', admin.site.urls),
-    path('rag/', include('app_rag.urls'), name="index"),
-    path('rag_dashboard/', include('app_rag.urls'),
+    path('about/',
+         include('about.urls'),
+         name='about'),
+    path('admin/',
+         admin.site.urls),
+    path('model_form_upload/',
+         include('app_rag.urls'),
+         name="model_form_upload"),
+    path('rag/',
+         include('app_rag.urls'),
+         name="index"),
+    path('rag_dashboard/',
+         include('app_rag.urls'),
          name="rag_dashboard"),
-    path('summernote/', include('django_summernote.urls')),
-    path('', include('landing.urls'), name="start"),
+    path('simple_upload/',
+         include('app_rag.urls'),
+         name="simple_upload"),
+    path('summernote/',
+         include('django_summernote.urls')),
+    path('',
+         include('landing.urls'),
+         name="start"),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)
