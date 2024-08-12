@@ -190,9 +190,7 @@ def rag_chromadb(request):
     '''
     View for RAG-app page using Chromadb
     '''
-    
     if request.method == "POST":
-        
         from langchain.chains import (create_history_aware_retriever,
                                       create_retrieval_chain)
         from langchain.chains.combine_documents import create_stuff_documents_chain
