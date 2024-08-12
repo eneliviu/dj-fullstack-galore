@@ -274,7 +274,6 @@ conversational_rag_chain = RunnableWithMessageHistory(
 # %%
 # Statefully manage chat history ###
 
-store = {}
 out = []
 out.append(conversational_rag_chain.invoke(
     {"input": "What is the document about?"},

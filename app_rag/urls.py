@@ -6,7 +6,7 @@ urlpatterns = [
          app_rag_views.index,
          name='index'),
     path('rag_dashboard/',
-         app_rag_views.rag_dashboard,
+         app_rag_views.rag_chromadb,
          name='rag_dashboard'),
     path('simple_upload/',
          app_rag_views.simple_upload,

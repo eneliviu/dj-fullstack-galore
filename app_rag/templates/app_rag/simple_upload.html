@@ -5,18 +5,20 @@
     <form method="post" enctype="multipart/form-data" class="mt-5 py-5 text-bg-primary">
       {% csrf_token %}
 
-      <input type="file" name="myfile" />
-        <button type="submit" class="btn btn-primary">
-          <span class="spinner-border spinner-border-lg text-white" 
-                role="status"></span>
+      <input type="file" name="myfile"/>
+        <button type="submit" class="btn btn-primary" id="btn_load_file" >
           Upload
+        </button>
+        <button class="btn btn-primary" type="button" disabled id='btn_loading_spinner'>
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+          </span>
         </button>
     </form>
 
     {% if uploaded_file_url %}
     <p>
       File uploaded at:
-      <a href="{{ uploaded_file_url }}"> {{ uploaded_file_url }} </a>
+      <a href="{{ uploaded_file_url }}"> {{ uploaded_file_url.file }} </a>
     </p>
     {% endif %}
 
@@ -26,3 +28,17 @@
   </div>
 </div>
 {% endblock %}
+
+<script>
+  document.getElementById('btn_loading_spinner').style.display='none';
+  function start_spinner(){
+    document.getElementById('btn_load_file').style.display='none';
+    document.getElementById('btn_loading_spinner').style.display='inline';
+  }
+
+  function stop_spinner(){
+    document.getElementById('btn_load_file').style.display='inline';
+    document.getElementById('btn_loading_spinner').style.display='none';
+  }
+
+</script>
