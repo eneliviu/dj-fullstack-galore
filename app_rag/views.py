@@ -1,14 +1,19 @@
-
+import os
 from django.shortcuts import render, get_object_or_404, redirect
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponseRedirect
 from pgvector.django import L2Distance
 import uuid
+
 from .summary_generator import generate_story
 from .models import LangchainPgEmbedding, LoadImage
 from .embedding import get_embedding
 from .forms import DocumentForm
+
+from dotenv import load_dotenv
+load_dotenv('/home/lien/NLP/dj-fullstack-galore/app_rag/.env',
+             override=True)
 
 # Create your views here.
 
@@ -100,43 +105,34 @@ def model_form_upload(request):
     Upload files using Django Forms
     Does not save the uploaded file
     '''
-    from .rag_chain_memory import (load_document, chunk_data,
-                                    make_embeddings_chroma) 
-    
-    LLM_DEFAULT = 'gpt-4o-2024-08-06'  # "gpt-3.5-turbo" #
-    EMBEDDING_MODEL_DEFAULT = 'text-embedding-3-large'
-    CHUNK_SIZE = 1000
-    CHUNK_OVERLAP = 250
-    CHROMA_PATH = './chroma_db'
+    import os
+    from .utils import (load_pdf,
+                        chunk_data,
+                        make_embeddings_chroma) 
     
     if request.method == "POST":
         form = DocumentForm(request.POST,
                             request.FILES)
-        if form.is_valid():  # handle_uploaded_file(request.FILES["file"])
-            # Transform loaders to Langchain data model
-            docs = load_document(request.FILES["file"])
-            # Construct retriever ###
+        chunk_size = int(os.getenv('CHUNK_SIZE'))
+        chunk_overlap = int(os.getenv('CHUNK_OVERLAP'))
+        embedding_model = os.getenv('EMBEDDING_MODEL_DEFAULT')
+        chroma_path = os.getenv('CHROMA_PATH')
+        
+        if form.is_valid():  # handle_uploaded_file(request.FILES["file"])         
+            # LLM_DEFAULT = 'gpt-4o-2024-08-06'  # "gpt-3.5-turbo" #
+            # EMBEDDING_MODEL_DEFAULT = 'text-embedding-3-large'
+            # CHUNK_SIZE = 1000
+            # CHUNK_OVERLAP = 250
+            # CHROMA_PATH = './chroma_db'
+            
+            docs = load_pdf(request.FILES["file"])
             splits = chunk_data(docs,
-                                chunk_size=CHUNK_SIZE,
-                                chunk_overlap=CHUNK_OVERLAP)
-
+                                chunk_size=chunk_size,
+                                chunk_overlap=chunk_overlap)
             vectorstore = make_embeddings_chroma(splits,
-                                                model_name=EMBEDDING_MODEL_DEFAULT,
-                                                persist_directory=CHROMA_PATH)
+                                                 model_name=embedding_model,
+                                                 persist_directory=chroma_path)
             retriever = vectorstore.as_retriever()
-
-            # <--- The logic to handle the upload here--->
-            # Embed the file to Chroma db:
-            # ChromaEmbeddings(
-            #     model=LLM_DEFAULT,
-            #     temperature=0,
-            #     document=request.FILES,
-            #     embedding_model=EMBEDDING_MODEL_DEFAULT,
-            #     chroma_path=CHROMA_PATH,
-            #     chunk_size=CHUNK_SIZE,
-            #     chunk_overlap=CHUNK_OVERLAP
-            # )
-            # <--- The logic to handle the upload here--->
             return HttpResponseRedirect("/rag/rag_dashboard")
     else:
         form = DocumentForm()
@@ -145,7 +141,6 @@ def model_form_upload(request):
                   {"form": form}
                   )
 
-    
 # Handling uploaded images with a model
 def model_form_upload_images(request):
     '''

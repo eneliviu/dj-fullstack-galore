@@ -19,6 +19,15 @@ CHUNK_SIZE = 1000
 CHUNK_OVERLAP = 500
 CHROMA_PATH = './chroma_db'
 
+
+def load_pdf(file):
+    from langchain.document_loaders import PyPDFLoader
+    print(f'Loading {file}')
+    loader = PyPDFLoader(file)
+    data_from_file = loader.load()
+    return data_from_file
+
+
 def load_document(file):
     '''
     Load file(s)
@@ -66,8 +75,6 @@ def make_embeddings_chroma(chunks,
     import os
     from langchain_community.vectorstores import Chroma
     from langchain_openai import OpenAIEmbeddings
-    from chromadb.config import Settings
-    from chromadb import Client
  
     embedding_function = OpenAIEmbeddings(model=model_name)    
     vector_store = Chroma.from_documents(chunks,

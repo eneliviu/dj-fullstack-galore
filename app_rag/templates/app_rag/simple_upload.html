@@ -2,14 +2,15 @@
 
 <div class="container justify-content-center">
   <div class="row">
-    <form
-      method="post"
-      enctype="multipart/form-data"
-      class="mt-5 py-5 text-bg-primary"
-    >
+    <form method="post" enctype="multipart/form-data" class="mt-5 py-5 text-bg-primary">
       {% csrf_token %}
+
       <input type="file" name="myfile" />
-      <button type="submit" class="btn btn-primary">Upload</button>
+        <button type="submit" class="btn btn-primary">
+          <span class="spinner-border spinner-border-lg text-white" 
+                role="status"></span>
+          Upload
+        </button>
     </form>
 
     {% if uploaded_file_url %}
