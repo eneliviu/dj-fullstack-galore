@@ -10,9 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
-import dj_database_url
 from pathlib import Path
-from dotenv import load_dotenv,  find_dotenv
+import dj_database_url
+from dotenv import load_dotenv
 
 load_dotenv('/home/lien/NLP/dj-fullstack-galore/app_rag/.env', 
             override=True)
@@ -59,6 +59,20 @@ INSTALLED_APPS = [
     'landing',
     'widget_tweaks',
 ]
+
+SITE_ID = 1
+# So that Django can handle multiple sites from one database.
+# We need to give each project an ID value so that the database
+# is aware of which project is contacting it.
+# We only have one site here using our one database,
+# but we'll still need to tell Django the site number of 1 explicitly.
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
+# These constants set bootstrap5 as the allowed template pack and as the
+# default template pack for project.
+# This choice of default template pack is to match the Bootstrap5 CSS and JS
+# files already used in project base.html template.
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -109,9 +123,9 @@ DATABASES = {
          'NAME': 'vector_db',
          "USER": "lien",
          "PASSWORD": "1212",
-         #"HOST": "localhost",
-         #"PORT": 5432,
-     },        
+         # "HOST": "localhost",
+         # "PORT": 5432,
+     }, 
     'files': {
          'ENGINE': 'django.db.backends.sqlite3',
          'NAME': BASE_DIR / 'db.sqlite3',

@@ -12,6 +12,7 @@ from .forms import DocumentForm
 
 # Create your views here.
 
+
 def index(request):
     '''
     View for RAG-app page
@@ -40,7 +41,6 @@ def rag_dashboard(request):
         doc = LangchainPgEmbedding.objects.all().order_by(L2Distance('embedding',
                                                                       embedding)).first()
         # TODO: OpenAI summarization:
-        
         
         context = {'text': text,
                    'most_similar': doc
@@ -98,13 +98,45 @@ def simple_upload(request):
 def model_form_upload(request):
     '''
     Upload files using Django Forms
+    Does not save the uploaded file
     '''
-  
+    from .rag_chain_memory import (load_document, chunk_data,
+                                    make_embeddings_chroma) 
+    
+    LLM_DEFAULT = 'gpt-4o-2024-08-06'  # "gpt-3.5-turbo" #
+    EMBEDDING_MODEL_DEFAULT = 'text-embedding-3-large'
+    CHUNK_SIZE = 1000
+    CHUNK_OVERLAP = 250
+    CHROMA_PATH = './chroma_db'
+    
     if request.method == "POST":
         form = DocumentForm(request.POST,
                             request.FILES)
-        if form.is_valid():
-            # handle_uploaded_file(request.FILES["file"])
+        if form.is_valid():  # handle_uploaded_file(request.FILES["file"])
+            # Transform loaders to Langchain data model
+            docs = load_document(request.FILES["file"])
+            # Construct retriever ###
+            splits = chunk_data(docs,
+                                chunk_size=CHUNK_SIZE,
+                                chunk_overlap=CHUNK_OVERLAP)
+
+            vectorstore = make_embeddings_chroma(splits,
+                                                model_name=EMBEDDING_MODEL_DEFAULT,
+                                                persist_directory=CHROMA_PATH)
+            retriever = vectorstore.as_retriever()
+
+            # <--- The logic to handle the upload here--->
+            # Embed the file to Chroma db:
+            # ChromaEmbeddings(
+            #     model=LLM_DEFAULT,
+            #     temperature=0,
+            #     document=request.FILES,
+            #     embedding_model=EMBEDDING_MODEL_DEFAULT,
+            #     chroma_path=CHROMA_PATH,
+            #     chunk_size=CHUNK_SIZE,
+            #     chunk_overlap=CHUNK_OVERLAP
+            # )
+            # <--- The logic to handle the upload here--->
             return HttpResponseRedirect("/rag/rag_dashboard")
     else:
         form = DocumentForm()
@@ -112,7 +144,7 @@ def model_form_upload(request):
                   "app_rag/model_form_upload.html",
                   {"form": form}
                   )
-    
+
     
 # Handling uploaded images with a model
 def model_form_upload_images(request):

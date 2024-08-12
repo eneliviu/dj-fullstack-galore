@@ -69,17 +69,7 @@ def make_embeddings_chroma(chunks,
     from chromadb.config import Settings
     from chromadb import Client
  
-    embedding_function = OpenAIEmbeddings(model=model_name)
-    # chroma vector store object
-    client = Client(Settings(allow_reset=True,
-                             persist_directory=CHROMA_PATH
-                             ))
-    collection = client.get_or_create_collection(name="vectors")
-    if client.get_or_create_collection(name="vectors"):
-        print('Check if ChromaDB exists')
-        client.delete_collection(name="chroma_info")
-        print('Existing ChromaDB deleted')
-    
+    embedding_function = OpenAIEmbeddings(model=model_name)    
     vector_store = Chroma.from_documents(chunks,
                                          embedding_function,
                                          collection_name="vectors",
@@ -124,6 +114,82 @@ def get_session_history(session_id: str) -> BaseChatMessageHistory:
 
 
 # %%
+class ChromaEmbeddings:
+    '''
+    Class handling the loaded files
+    '''
+    def __init__(self,
+                 # llm,  # if don't provide a default
+                 model=LLM_DEFAULT,
+                 temperature=0,
+                 document=None,
+                 embedding_model=EMBEDDING_MODEL_DEFAULT,
+                 chroma_path=CHROMA_PATH,
+                 chunk_size=CHUNK_SIZE,
+                 chunk_overlap=CHUNK_OVERLAP):
+        # Initialization of class variables
+        # self.llm = llm
+        self.llm = ChatOpenAI(model=model, temperature=temperature)
+        self.embedding_model = embedding_model
+        self.chroma_path = chroma_path
+        self.chunk_size = chunk_size
+        self.chunk_overlap = chunk_overlap
+        self.docs = document
+        self.vect_store = None
+        self.retriever = None
+    
+    def chunk_and_embed(self, loaded_doc):
+        '''
+        Chunk the data and  generate embeddings.
+        '''
+        # Split the doc in chunks
+        doc_splits = chunk_data(loaded_doc,
+                                chunk_size=self.chunk_size,
+                                chunk_overlap=self.chunk_overlap)
+        
+        # Embed the chunks and save them to a Chroma vector store
+        vstore = make_embeddings_chroma(doc_splits, 
+                                        model_name=self.embedding_model,
+                                        persist_directory=self.chroma_path)
+        return vstore
+    
+    def setup_retriever(self):
+        """
+        Load the documents, chunk them, create embeddings,
+        and set up the retriever.
+        """     
+        # Chunk the document and create embeddings
+        self.vect_store = self.chunk_and_embed(self.docs)
+        
+        # Transform the vector_store into a retriever
+        self.retriever = self.vect_store.as_retriever()
+    
+    def get_retriever(self):
+        """
+        Retrieve the retriever object.
+        """
+        return self.retriever
+    
+    def get_llm(self):
+        """
+        Retrieve the ChatOpenAI model object.
+        """
+        return self.llm
+
+
+retriever = ChromaEmbeddings(
+    model=LLM_DEFAULT,
+    temperature=0,
+    embedding_model=EMBEDDING_MODEL_DEFAULT,
+    chroma_path=CHROMA_PATH,
+    chunk_size=CHUNK_SIZE,
+    chunk_overlap=CHUNK_OVERLAP
+)
+
+# retriever.setup_retriever()
+# retriever_instance = retriever.get_retriever()
+ 
+# %%
 
 llm = ChatOpenAI(model=LLM_DEFAULT, temperature=0)
 
@@ -142,8 +208,8 @@ retriever = vectorstore.as_retriever()
 
 #%%
 
-import chromadb
-client = chromadb.PersistentClient(path="CHROMA_PATH")
+# import chromadb
+# client = chromadb.PersistentClient(path="CHROMA_PATH")
 # %%
 
 # CREATE RAG-CHAIN

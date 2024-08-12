@@ -49,13 +49,14 @@ class LangchainPgEmbedding(models.Model):
         db_table = 'langchain_pg_embedding'
 
 
-# class Document(models.Model):
-#     '''
-#     Model for uploaded documents
-#     '''
-#     description = models.CharField(max_length=200, blank=True)
-#     document = models.FileField(upload_to='documents/')
-#     uploaded_at = models.DateTimeField(auto_now_add=True)
+class Document(models.Model):
+    '''
+    Model for uploaded documents
+    '''
+    description = models.CharField(max_length=100, blank=False)
+    document = models.FileField(upload_to='files/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
 
 class LoadImage(models.Model):
     '''
@@ -67,6 +68,6 @@ class LoadImage(models.Model):
     class Meta:
         '''
         '''
-        managed = True  # False: not added to database
+        managed = False  # False: not added to database
         db_table = 'Images'
     
