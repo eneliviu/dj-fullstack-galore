@@ -7,7 +7,7 @@ class DocumentForm(forms.Form):
     Form for uploading documents. No model required.
     '''
     # title = forms.CharField(max_length=100, required=True)
-    file = forms.FileField(label='')
+    file = forms.FileField(label='Upload')
     
     
 class ImageLoadForm(forms.ModelForm):

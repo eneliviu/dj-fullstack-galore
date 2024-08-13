@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'app_rag',
     'import_export',
     'landing',
+    'map_app',
     'widget_tweaks',
 ]
 

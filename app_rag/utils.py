@@ -62,7 +62,7 @@ def load_embeddings_chroma(persist_directory, embedding_model_default):
                           embedding_function=embedding_function)
     return vector_store
 
-
+store = {}
 def get_session_history(session_id: str) -> BaseChatMessageHistory:
     '''
     Statefully manage chat history

@@ -12,9 +12,11 @@ def get_embedding(text: str):
     '''
     Make model embeddings from the user text query
     '''
-    text = text.replace("\n", " ")
+    if text:
+        text = text.replace("\n", " ")
+    else:
+        text = 'hi boot'
     input_vector = OpenAIEmbeddings(model=EMBEDDING_MODEL).embed_query(text)
-    
     return input_vector
 
 
