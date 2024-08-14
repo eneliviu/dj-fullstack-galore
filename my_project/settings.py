@@ -120,6 +120,7 @@ WSGI_APPLICATION = 'my_project.wsgi.application'
 
 
 DATABASES = {
+    #'default': {},
     'default': {
          'ENGINE': 'django.db.backends.postgresql_psycopg2',
          'NAME': 'vector_db',
@@ -127,11 +128,19 @@ DATABASES = {
          "PASSWORD": "1212",
          # "HOST": "localhost",
          # "PORT": 5432,
-     }, 
-    'files': {
+     },
+    'projectdb': {
          'ENGINE': 'django.db.backends.sqlite3',
          'NAME': BASE_DIR / 'db.sqlite3',
      },
+    'geospatial': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': 'geospatial_db',
+        'USER': 'geospatial_user',
+        'PASSWORD': '1212',
+        # 'HOST': 'localhost',
+        # 'PORT': '5432',
+    },
  }
 
 
