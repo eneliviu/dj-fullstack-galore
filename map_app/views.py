@@ -13,43 +13,52 @@ def index(request):
     '''
     Create folium Map object
     '''
-    if request.method == 'POST':
-        form = SearchForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('/map_app')
-    else:
-        form = SearchForm()
-    
-    address = Search.objects.all().last()  
-    location = geocoder.osm(address)
-    lat = location.lat
-    lng = location.lng
-    print([lat, lng])
-    country = location.country
-    if lat is None or lng is None:
-        address.delete()
-        return HttpResponse('Your address input is invalid')
-    
     m = folium.Map(tiles="cartodb positron",
-                   zoom_start=3,
+                   zoom_start=9,
                    control_scale=True)
-    
     MousePosition().add_to(m)
     Draw(export=False,
          draw_options=True,
          position='bottomleft').add_to(m)
     Fullscreen(position='topright').add_to(m)
-     
-    folium.Marker([lat, lng],
-                  tooltip='Click for more',
-                  popup=country).add_to(m)
     
-    context = {'map': m._repr_html_(),  # HTML representation of the Map() object
-               'form': form}
-    return render(
-        request,
-        'map_app/map.html',
-        context
-    )
+    if Search.objects.all().last() is None:
+        if request.method == 'POST':
+            folium.Marker([0, 0],
+                        tooltip='Click for more',
+                        popup='Default View').add_to(m)
+            context = {'map': m._repr_html_(),
+                       'form': SearchForm()}
 
+    if request.method == 'POST':
+        address_form = SearchForm(request.POST)
+        if address_form.is_valid():             
+            address_form.save()
+            
+        address = Search.objects.all().last() 
+        location = geocoder.osm(address)
+        lat = location.lat
+        lng = location.lng
+        print([lat, lng])
+        country = location.country   
+        if lat is None or lng is None:
+            address.delete()
+            context = {'map': m._repr_html_(),
+                       'form': address_form} 
+        else: 
+            folium.Marker([lat, lng],
+                          tooltip='Click for more',
+                          popup=country).add_to(m)
+            context = {'map': m._repr_html_(),
+                       'form': address_form}
+        
+        return render(request,
+                      'map_app/map.html',
+                      context)
+        
+    else:
+        return render(
+            request,
+            'map_app/map.html',
+            {'form': SearchForm()}
+        )
