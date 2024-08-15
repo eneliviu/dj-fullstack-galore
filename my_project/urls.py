@@ -25,6 +25,8 @@ urlpatterns = [
     path('about/',
          include('about.urls'),
          name='about'),
+    path("accounts/",
+         include("allauth.urls")),
     path('admin/',
          admin.site.urls),
     path('map_app/',
@@ -42,6 +44,7 @@ if settings.DEBUG:  # to serve media files during development
     urlpatterns += static(settings.MEDIA_URL,
                           document_root=settings.MEDIA_ROOT)
     urlpatterns += [
-    path('accounts/', include('django.contrib.auth.urls')),]
+                    path('accounts/', include('django.contrib.auth.urls')),
+                    ]
 
 
