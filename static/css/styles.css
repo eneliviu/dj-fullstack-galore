@@ -26,6 +26,7 @@ header {
 }
 
 .navbar__base {
+    z-index: 999;
     background-color: rgba(255, 255, 255, 0.7) !important;
     backdrop-filter: blur(1px);
 }
@@ -121,7 +122,8 @@ fieldset {
 }
 
 .card {
-    transition: all 0.3s; 
+    transition: all 0.3s;
+    overflow: visible; 
 }
 .card:hover {
     scale: 1;

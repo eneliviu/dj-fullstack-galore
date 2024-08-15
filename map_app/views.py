@@ -32,14 +32,14 @@ def index(request):
 
     if request.method == 'POST':
         address_form = SearchForm(request.POST)
-        if address_form.is_valid():             
+        if address_form.is_valid():
+            # address_form['address'] = address_form['address'].lower().capitalize()        
             address_form.save()
             
         address = Search.objects.all().last() 
         location = geocoder.osm(address)
         lat = location.lat
         lng = location.lng
-        print([lat, lng])
         country = location.country   
         if lat is None or lng is None:
             address.delete()
