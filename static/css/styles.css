@@ -8,7 +8,7 @@
 body {
     position: relative;
     background-color: #F9FAFC;
-    height: 150%;
+    height: 100%;
     padding-top: 56px;
     font: 1rem/1.4 system-ui, sans-serif;
     width: 100%;
@@ -63,7 +63,53 @@ fieldset {
     transform: translateX(-38%);
 }
 
+.btn-signup,
+.btn-edit {
+    background-color: #188181;
+    color: #fff;
+}
 
+.btn-signup:hover,
+.btn-signup:active {
+    background-color: #fff;
+    color: #23BBBB;
+}
+
+.link {
+    color: #23BBBB;
+    text-decoration: none;
+}
+
+.link:hover,
+.link:active {
+    color: #445261;
+    text-decoration: underline;
+}
+
+.btn-like {
+    color: #E84610;
+    border: none;
+    background: transparent;
+}
+
+.btn-delete {
+    color: #fff;
+    background: #E84610;
+}
+
+.btn-like:hover,
+.btn-like:active {
+    color: #E84610;
+    background: transparent;
+    border: none;
+}
+.faded {
+    color: rgb(172, 175, 175);
+}
+
+.approval {
+    color: rgb(222, 146, 168);
+}
 #btn-submit-user-query{
     position: fixed;
     right:0;
@@ -109,13 +155,13 @@ fieldset {
 
 }
 
-.social-icons a > i {
+.social-icons i {
     color: #fafafa;
     opacity: 0.7;
     padding: 0 2rem;
 }
 
-.social-icons a>i:hover {
+.social-icons i:hover {
     scale: 1.5;
 	opacity: 1;
     display:inline-block;
@@ -129,10 +175,14 @@ fieldset {
     scale: 1;
 }
 
-
+.div_bottom {
+    position: relative;
+    bottom: 0;
+}
 .footer__base{
     max-height: 70px;
     margin: 0;
+    width: 100%;
 }
 
 

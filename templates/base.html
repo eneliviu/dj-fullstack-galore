@@ -1,13 +1,11 @@
-{% url 'base' as home_url %}
-{% url 'account_login' as login_url %} 
-{% url 'account_signup' as signup_url %}
-{% url 'account_logout' as logout_url %}
+{% url 'base' as home_url %} {% url 'account_login' as login_url %} 
+{% url 'account_signup' as signup_url %} {% url 'account_logout' as logout_url %} 
 {% load static %}
 
 <!DOCTYPE html>
 <html class="h-100" lang="en">
     <head>
-        <title>ForestryBot</title>
+        <title>Forestry|Hub</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         <!-- Google Fonts CSS -->
@@ -57,7 +55,7 @@
                     <!-- LOGO -->
                     <a class="navbar-brand text-capitalize mb-1" href="/">
                         <i class="bi bi-robot ms-2 me-3"></i>
-                        <strong id="logo"> ForestryHub </strong>
+                        <strong id="logo"> Forestry|Hub </strong>
                     </a>
 
                     <!-- Toggler button for small screens -->
@@ -152,9 +150,11 @@
                                     class="nav-link {% if request.path == signup_url %}active{% endif %}"
                                     aria-current="page"
                                     href="{% url 'account_signup' %}"
-                                    >Register</a
                                 >
+                                    Register
+                                </a>
                             </li>
+
                             <li class="nav-item mx-3">
                                 <a
                                     class="nav-link {% if request.path == login_url %}active{% endif %}"
@@ -178,8 +178,8 @@
                     <span
                         class="navbar-text mx-3 d-none d-xl-inline text-success-emphasis ms-2"
                     >
-                      Hi, {{ user | safe }}!
-                      <i class="bi bi-person-circle  ms-2 "></i>
+                        Hi, {{ user | safe }}!
+                        <i class="bi bi-person-circle ms-2"></i>
                     </span>
                     {% else %}
                     <span
@@ -188,7 +188,6 @@
                         ...confusion is part of programming
                     </span>
                     {% endif %}
-
                 </div>
             </nav>
         </header>
@@ -199,36 +198,46 @@
 
         <!-- Footer -->
 
-        <footer class="footer__base py-2 bg-black mt-auto sticky-bottom">
-            <div class="container">
-                <div class="fs-5 social-icons text-center p-0 m-0">
-                    <a
+        <footer class="container-fluid d-flex flex-column footer__base bg-black position-fixed bottom-0 p-2">
+          <div class="row row-cols-lg-2">
+                <div class="col d-flex fs-5 social-icons justify-content-center">
+                  <span class="text-white-50 small">Follow us : </span>
+                  <div class="justify-content-between mx-4">
+
+                     <i class="fa-brands fa-facebook">  </i>
+                      <a
                         href="https://www.facebook.com/"
                         target="_blank"
                         rel="noopener"
                         aria-label="Visit our Facebook page (opens in a new tab)"
-                    >
-                        <i class="fa-brands fa-facebook"></i>
+                      >
+                   
+
+                        
                     </a>
+                    
+                    <i class="fa-brands fa-twitter"></i>
                     <a
                         href="https://www.twitter.com/"
                         target="_blank"
                         rel="noopener"
                         aria-label="Visit our Twitter page (opens in a new tab)"
                     >
-                        <i class="fa-brands fa-twitter"></i>
+                       
                     </a>
+
+                    <i class="fa-brands fa-square-youtube"></i>
                     <a
                         href="https://www.youtube.com/"
                         target="_blank"
                         rel="noopener"
                         aria-label="Visit our Youtube channel (opens in a new tab)"
-                    >
-                        <i class="fa-brands fa-square-youtube"></i>
-                    </a>
+                    ></a>
+                  </div>  
+                 
                 </div>
 
-                <div class="p-0 m-0 text-center text-white">
+                <div class="text-end text-white px-5">
                     <small
                         >Copyright &copy;
                         <script>
@@ -237,18 +246,13 @@
                         <span> Code|Star: All Rights Reserved </span>
                     </small>
                 </div>
-            </div>
-        </footer>
 
-        <!-- Footer
-    <footer class="sticky-footer bg-white">
-        <div class="container my-auto">
-            <div class="copyright text-center my-auto">
-                <span>Copyright © Your Website 2021</span>
-            </div>
-        </div>
-    </footer>
-    -->
+          </div>
+                
+
+                
+  
+        </footer>
 
         <script
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
