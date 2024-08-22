@@ -30,3 +30,13 @@ docker run --name pgvector-postgres -e POSTGRES_PASSWORD=admin -d postgres -p 54
 
 check pgAdmin
 python manage.py dbshell
+
+----------------------------------------------------
+Social media site called “Rate_Me” where users:
+-get a profile page
+-can view other users pages but can’t edit them
+-can leave comments on each others pages
+-can rate other users
+-can’t use fowl language when reviewing / commenting
+
+A website that acts as an aggregator of new project ideas?
