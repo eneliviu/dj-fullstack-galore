@@ -40,3 +40,6 @@ Social media site called “Rate_Me” where users:
 -can’t use fowl language when reviewing / commenting
 
 A website that acts as an aggregator of new project ideas?
+
+Travel and blog site:
+-"TrekMemoirs"
