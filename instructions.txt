@@ -43,3 +43,4 @@ A website that acts as an aggregator of new project ideas?
 
 Travel and blog site:
 -"TrekMemoirs"
+-"LovinJourneys"
