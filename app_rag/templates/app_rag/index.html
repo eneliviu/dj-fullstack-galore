@@ -77,6 +77,19 @@
                             <script>
                                 document.write(new Date().toLocaleDateString())
                             </script>
+
+                            <script>
+                                // Wait for the DOM to be fully loaded
+                                document.addEventListener("DOMContentLoaded", function () {
+                                // Create a formatted date string
+                                let currentDate = new Date().toLocaleDateString();
+                                // Locate the element by its ID
+                                let dateElement = document.getElementById("current-date");
+                                // Set the text content of the element to the date string
+                                dateElement.textContent = currentDate;
+                                });
+                            </script>
+
                         </small>
 
                          <div>

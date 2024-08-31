@@ -39,12 +39,23 @@
             href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
         />
 
+        <!-- Leaflet -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+            integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+            crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin="">
+        </script>
+
         <!-- Custom CSS -->
         <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
         <!--<link rel="stylesheet" href="/static/css/styles.css" />-->
 
         <!--Custom JS-->
+        
         <link rel="stylesheet" href="{% static 'js/script.js' %}" />
+
     </head>
 
     <body class="d-flex flex-column main-bg">
@@ -192,8 +203,12 @@
             </nav>
         </header>
 
-        <main class="d-flex flex-column">
-            {% block content %} Content Goes here {% endblock content %}
+        <main class="container d-flex flex-column">
+
+            {% block content %} 
+            
+            {% endblock %}
+        
         </main>
 
         <!-- Footer -->
@@ -258,5 +273,10 @@
             src="https://kit.fontawesome.com/498c29f243.js"
             crossorigin="anonymous"
         ></script>
+
+
+        
+
+
     </body>
 </html>

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+
+{% block content %} 
+
+<!-- html content starts here -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+<div id='map' style='height: 500px; width: 500px;' class='container mt-5'></div>
+{{ trips|json_script:"trips_json" }}
+
+<script type='text/javascript'>
+    var map = L.map('map');
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
+    L.Control.geocoder().addTo(map);
+        
+    let locations = JSON.parse(document.getElementById('trips_json').textContent);
+
+    // add marker for each location
+    let avg_lat = 0
+    let avg_lon = 0
+    locations.forEach( (element, idx) => {
+        L.marker([element.lat, element.lon]).addTo(map);
+        avg_lat = (avg_lat + element.lat)
+        avg_lon = (avg_lon + element.lon)
+    })
+    avg_lat = avg_lat/locations.length
+    avg_lon = avg_lon/locations.length    
+    map.setView([avg_lat, avg_lon], 7);
+
+</script>
+
+
+<!-- index.html content ends here -->
+{% endblock %}
