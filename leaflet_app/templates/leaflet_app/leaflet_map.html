@@ -1,36 +1,98 @@
 {% extends 'base.html' %}
 
-
+{% load crispy_forms_tags %}
 {% block content %} 
 
 <!-- html content starts here -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
-<div id='map' style='height: 500px; width: 500px;' class='container mt-5'></div>
+
+<!-- displaying Django messages
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            {% for message in messages %}
+            <div class="alert {{ message.tags }} alert-dismissible fade show" id="msg" role="alert">
+                {{ message | safe }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+ -->
+<div class="container">
+<div class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+  <div class="d-flex">
+    <div class="toast-body">
+        {% for message in messages %}
+            <div class="alert {{ message.tags }} alert-dismissible fade show" id="msg" role="alert">
+                {{ message | safe }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    </div>
+    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+  </div>
+</div>
+</div>
+
+<!-- Modal -->
+ <div class='row'>
+    <div class='col-4'>
+        <!-- Button trigger modal -->
+  
+
+        <div class="container">
+            <form action = "" method = "POST">
+                {% csrf_token %}
+                {{ form | crispy }}
+                <input type="submit" value="Submit" class="btn btn-outline-primary">  
+                <button type="button" class="btn btn-secondary float-end" data-bs-dismiss="modal">Close</button>
+            </form>
+        </div>
+                   
+    </div>
+
+    <div class='col-8'>
+        <div id="map" style="height: 500px; width: 500px;" class="container mt-5"></div>
+    </div>
+ </div>
+
+
+
 {{ trips|json_script:"trips_json" }}
 
 <script type='text/javascript'>
+    
+    let locations = JSON.parse(document.getElementById('trips_json').textContent);
+    console.log()
+   
+    /*
+    let avg_lat = 0
+    let avg_lon = 0
+    locations.forEach( (element, idx) => {
+        avg_lat = (avg_lat + element.lat)
+        avg_lon = (avg_lon + element.lon)
+    })
+    avg_lat = avg_lat/locations.length
+    avg_lon = avg_lon/locations.length   
+    */
+
     var map = L.map('map');
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             }).addTo(map);
-    L.Control.geocoder().addTo(map);
-        
-    let locations = JSON.parse(document.getElementById('trips_json').textContent);
-
-    // add marker for each location
-    let avg_lat = 0
-    let avg_lon = 0
-    locations.forEach( (element, idx) => {
-        L.marker([element.lat, element.lon]).addTo(map);
-        avg_lat = (avg_lat + element.lat)
-        avg_lon = (avg_lon + element.lon)
+    
+    /*
+    locations.forEach( element => {
+        console.log(element)
+        L.marker([element.lat, element.lon]).addTo(map)
     })
-    avg_lat = avg_lat/locations.length
-    avg_lon = avg_lon/locations.length    
-    map.setView([avg_lat, avg_lon], 7);
+    */
+    map.setView([60, 9], 6)
 
 </script>
 
