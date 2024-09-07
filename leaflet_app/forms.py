@@ -1,8 +1,8 @@
 from django import forms
-from .models import Trip
 from django.core.exceptions import ValidationError
+from .models import Trip
 
- 
+
 # create a ModelForm
 class TripForm(forms.ModelForm):
 
@@ -13,14 +13,16 @@ class TripForm(forms.ModelForm):
             'start_date': forms.widgets.DateInput(attrs={'type': 'date'}),
             'end_date': forms.widgets.DateInput(attrs={'type': 'date'})
         }
-        
-    def is_valid(self):
-        valid = super(TripForm, self).is_valid()
+    
+    def clean(self):
         cleaned_data = super(TripForm, self).clean()
-        if valid:
-            if cleaned_data.get('start_date') < cleaned_data.get('end_date'):
-                self.add_error('end_date',
-                               'End date must be >= the start date')
-                valid = False
-        return valid
+        start_date = cleaned_data.get('start_date')
+        end_date = cleaned_data.get('end_date')
+        
+        if start_date and end_date:
+            if end_date < start_date:
+                self.add_error('end_date', 
+                               'End date cannot be earlier than start date.')
+         
+        return cleaned_data
             

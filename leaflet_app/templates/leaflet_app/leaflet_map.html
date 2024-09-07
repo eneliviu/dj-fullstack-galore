@@ -7,6 +7,10 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
+<!-- Leaflet.MarkerCluster -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js'></script>
+  <link href='https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css' rel='stylesheet' />
+  <link href='https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css' rel='stylesheet' />
 
 <!-- displaying Django messages
 <div class="container">
@@ -24,26 +28,24 @@
  -->
 <div class="container">
 <div class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
-  <div class="d-flex">
-    <div class="toast-body">
-        {% for message in messages %}
-            <div class="alert {{ message.tags }} alert-dismissible fade show" id="msg" role="alert">
-                {{ message | safe }}
+    <div class="d-flex">
+        <div class="toast-body">
+            {% for message in messages %}
+                <div class="alert {{ message.tags }} alert-dismissible fade show" id="msg" role="alert">
+                    {{ message | safe }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
     </div>
-    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-  </div>
-</div>
+    </div>
 </div>
 
 <!-- Modal -->
- <div class='row'>
+<div class='row'>
     <div class='col-4'>
         <!-- Button trigger modal -->
-  
-
         <div class="container">
             <form action = "" method = "POST">
                 {% csrf_token %}
@@ -62,37 +64,36 @@
 
 
 
-{{ trips|json_script:"trips_json" }}
+{{ trips | json_script:"trips_json" }}
 
 <script type='text/javascript'>
     
     let locations = JSON.parse(document.getElementById('trips_json').textContent);
-    console.log()
+    //console.log(locations)
    
-    /*
-    let avg_lat = 0
-    let avg_lon = 0
-    locations.forEach( (element, idx) => {
-        avg_lat = (avg_lat + element.lat)
-        avg_lon = (avg_lon + element.lon)
-    })
-    avg_lat = avg_lat/locations.length
-    avg_lon = avg_lon/locations.length   
-    */
-
-    var map = L.map('map');
+    var map = L.map('map').setView([60, 9], 6);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             }).addTo(map);
     
-    /*
+            
+    const markers = L.markerClusterGroup();
+      
+    arrayOfLatLngs = []
     locations.forEach( element => {
         console.log(element)
-        L.marker([element.lat, element.lon]).addTo(map)
+        const marker = L.marker([element.lat, element.lon])
+        markers.addLayer(marker);
     })
-    */
-    map.setView([60, 9], 6)
+
+    //markers.addTo(map)
+    map.addLayer(markers)
+
+    var bounds = markers.getBounds();
+    if (bounds.isValid()) {
+        map.fitBounds(bounds, maxZoom=11);
+    }
 
 </script>
 

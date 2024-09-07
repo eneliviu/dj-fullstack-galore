@@ -3,7 +3,6 @@ from . import views as leaflet_app_views
 
 urlpatterns = [
     path('',
-         leaflet_app_views.index,
-         name='leaflet_app'),
+         leaflet_app_views.index),
 ]
 

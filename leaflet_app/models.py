@@ -1,9 +1,10 @@
+
 from django.db import models
 from django.core.validators import MaxValueValidator as mxvv
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
+from .utils import get_coordinates
 
-
-User = get_user_model()
+# User = get_user_model()
 
 # Create your models here.
 class Trip(models.Model):
@@ -17,8 +18,26 @@ class Trip(models.Model):
     lat = models.FloatField(blank=True, null=True)
     lon = models.FloatField(blank=True, null=True)
     
+    def save(self, *args, **kwargs):
+        '''
+        Override the save() method to set the Lat and Lon values 
+        before saving.
+        '''
+        try:
+            coords = get_coordinates(self.location)
+            self.lat = coords[0]
+            self.lon = coords[1]
+            print(self)
+        except Exception as e:
+            print(f"Operation failed: {e}")
+    
+        super(Trip, self).save(*args, **kwargs)
+    
     def __str__(self):
-        return self.location
+        return f'{self.location}, {self.country}'
+    
+    class Meta:
+        ordering = ['start_date']
 
 
 class Post(models.Model):
@@ -43,4 +62,4 @@ class Post(models.Model):
                                                validators=[mxvv(5)])
 
     def __str__(self):
-        return f"{self.name} in {self.journey.location}"
+        return f"{self.name} in {self.category}"
