@@ -1,0 +1,30 @@
+                   List of relations
+ Schema |             Name              | Type  | Owner 
+--------+-------------------------------+-------+-------
+ public | account_emailaddress          | table | lien
+ public | account_emailconfirmation     | table | lien
+ public | app_rag_document              | table | lien
+ public | app_rag_loadimage             | table | lien
+ public | auth_group                    | table | lien
+ public | auth_group_permissions        | table | lien
+ public | auth_permission               | table | lien
+ public | auth_user                     | table | lien
+ public | auth_user_groups              | table | lien
+ public | auth_user_user_permissions    | table | lien
+ public | django_admin_log              | table | lien
+ public | django_content_type           | table | lien
+ public | django_migrations             | table | lien
+ public | django_session                | table | lien
+ public | django_site                   | table | lien
+ public | django_summernote_attachment  | table | lien
+ public | langchain_pg_collection       | table | lien
+ public | langchain_pg_embedding        | table | lien
+ public | leaflet_app_post              | table | lien
+ public | leaflet_app_trip              | table | lien
+ public | map_app_search                | table | lien
+ public | socialaccount_socialaccount   | table | lien
+ public | socialaccount_socialapp       | table | lien
+ public | socialaccount_socialapp_sites | table | lien
+ public | socialaccount_socialtoken     | table | lien
+(25 rows)
+

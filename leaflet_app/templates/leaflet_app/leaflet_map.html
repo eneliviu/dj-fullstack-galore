@@ -3,14 +3,8 @@
 {% load crispy_forms_tags %}
 {% block content %} 
 
-<!-- html content starts here -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
-<!-- Leaflet.MarkerCluster -->
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js'></script>
-  <link href='https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css' rel='stylesheet' />
-  <link href='https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css' rel='stylesheet' />
+<!-- html content starts here -->
 
 <!-- displaying Django messages
 <div class="container">
@@ -66,34 +60,61 @@
 
 {{ trips | json_script:"trips_json" }}
 
-<script type='text/javascript'>
-    
-    let locations = JSON.parse(document.getElementById('trips_json').textContent);
-    //console.log(locations)
-   
-    var map = L.map('map').setView([60, 9], 6);
+<script type='text/javascript'>  
+
+    var map = L.map('map', {zoomControl: true}).setView([60, 9], 6);
+    // Creating scale control
+    var scale = L.control.scale();
+    scale.addTo(map);
+
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             }).addTo(map);
-    
-            
+         
+    let locations = JSON.parse(document.getElementById('trips_json').textContent);
+   
     const markers = L.markerClusterGroup();
-      
-    arrayOfLatLngs = []
-    locations.forEach( element => {
-        console.log(element)
-        const marker = L.marker([element.lat, element.lon])
+    if(Object.keys(locations).length === 1){
+        const marker = L.marker([locations.lat, locations.lon])
+                        .bindPopup(locations.location)
         markers.addLayer(marker);
-    })
-
-    //markers.addTo(map)
+    } else {
+        locations.forEach( element => {
+            const marker = L.marker([element.lat, element.lon])
+                            .bindPopup(
+                                        '<div>'+
+                                        //<img src='img/" + feature.properties.img_name + "' width='259'/>+
+                                        '<b>'+element.location+'</b>'+
+                                        '</br>' + 
+                                        'From: '+element.start_date+'</br>'+
+                                        'To: '+element.end_date+
+                                        '</br>'+
+                                        "<a href='https://www.google.com' target='_blank' rel='noopener noreferrer'>" + "Gallery" + "</a>"+
+                                        '</div>'
+                                        );      
+            markers.addLayer(marker);
+        })
+    }
     map.addLayer(markers)
 
     var bounds = markers.getBounds();
     if (bounds.isValid()) {
         map.fitBounds(bounds, maxZoom=11);
     }
+
+    markers.on('click', function(e) {
+      map.flyTo(e.latlng, 9);      
+    }); 
+
+    function centerLeafletMapOnMarker(map, marker) {
+        var latLngs = [ marker.getLatLng() ];
+        var markerBounds = L.latLngBounds(latLngs);
+        map.fitBounds(markerBounds);
+    }
+
+
+    
 
 </script>
 
